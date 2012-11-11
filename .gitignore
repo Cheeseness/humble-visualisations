@@ -1,0 +1,5 @@
+#We don't need to add the downloads folder
+downloads/
+
+#We also don't want to grab database credentials
+dbcreds.php
