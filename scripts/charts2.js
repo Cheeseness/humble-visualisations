@@ -1080,7 +1080,7 @@ var makeAverageChart = function (data)
 	chartTarget.append("p").html("This graph shows the average purchase price for each platform for the selected promotions.<br /><span class = 'indicatorLin'>Blue</span> represents Linux, <span class = 'indicatorMac'>Green</span> represents Mac OS, <span class = 'indicatorWin'>Red</span> represents Windows, <span class = 'indicatorAll'>Bright red</span> represents the cross-platform average.<br />The <span class = 'indicatorAvgArea'>pink</span> filled area highlights values below the cross-platform average.");
 }
 
-var makeBundleStats = function(bundle, data, id = false)
+var makeBundleStats = function(bundle, data, id)
 {
 	var pieWidth = 122;
 	var pieHeight = pieWidth;
