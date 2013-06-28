@@ -45,7 +45,7 @@
 	*/
 	function getShortTitle($title)
 	{
-		return str_replace(array("The Humble Bundle for ", "The Humble Bundle ", "The Humble ", " Bundle", " Debut"),"", $title);
+		return str_replace(array("Humble Weekly Sale: ", "The Humble Bundle for ", "The Humble Bundle with ", "Humble Bundle with ", "The Humble Bundle ", "The Humble ", " Bundle", " Debut"),"", $title);
 	}
 	
 	
@@ -208,7 +208,28 @@
 		$bundleTitle = trim(preg_replace('/\s\s+/', ' ', $bundleTitle)); //they don't make this easy, do they?
 		$bundleTitle = str_replace("Thanks for purchasing the ", "The ", $bundleTitle); //this allows us to parse saved download pages (we can't pull them live since robots.txt doesn't allow it
 		$bundleTitle = str_replace("!", "", $bundleTitle);
-		
+
+
+		if ($bundleTitle == "")
+		{
+			//And now we have weekly stuff D:
+			$headings = $dom->getElementsByTagName("h2");
+			foreach ($headings as $h)
+			{
+				if (stripos($h->nodeValue, "weekly") !== false)
+				{
+					$bundleTitle = trim($h->nodeValue);
+					echo "<!--" . $bundleTitle . "-->";
+				}
+				else if (stripos($h->nodeValue, "the humble") !== false)
+				{
+					$bundleTitle = trim($h->nodeValue);
+					echo "<!--" . $bundleTitle . "-->";
+				}
+			}
+		}
+
+
 		//Let's check and see if the bundle is finished
 		$isOver = false;
 		if (stripos($bundleTitle, " is now") !== false)
@@ -236,12 +257,42 @@
 		{
 			$purchaseTotal = parseDollars($node->nodeValue);
 		}
-			
+		
+		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
+		foreach ($othernodes as $node)
+		{
+			echo "<!-- found? -->";
+			$fullPrice = $node->nodeValue;
+			$fullPrice = strip_tags($fullPrice);
+			//Shorten the string to everything from $ symbol
+			$fullPrice = substr($fullPrice, strpos($fullPrice, "$"));
+			//And now let's drop everything from (including) the first space, as well as the $ symbol
+			$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
+
+		}
+		
+		$chartURL = array();
+
 		//Time to parse some data out of the chart URL
 		$chartNode = $dom->getElementById('googlechart');
-		$chartURL = parse_url($chartNode->getAttribute('src'));
-		$chartURL = split("&", $chartURL['query']);
-	
+		if ($chartNode == null)
+		{
+			$temp = $dom->getElementsByTagName("img");
+			foreach($temp as $t)
+			{
+				if (stripos($t->getAttribute('data-color-src'), "chart.googleapis.com") !== false)
+				{
+					$chartNode = $t;
+				}
+
+			}
+		}
+		if ($chartNode != null)
+		{
+			$chartURL = parse_url($chartNode->getAttribute('src'));
+			$chartURL = split("&", $chartURL['query']);
+		}
+		
 		$chartElements = array();
 		foreach ($chartURL as $key => $value)
 		{
@@ -275,10 +326,36 @@
 			{
 				$pcMac = $data[$index];
 			}
-			else if ($platform == "992222")
+			else if (in_array($platform, array("992222", "883333")))
 			{
 				$pcWin = $data[$index];
 			}
+		}
+
+
+
+		$pattern = "(^.*initial_stats_data\':.*$)m";
+		if (preg_match($pattern, $page, $result))
+		{
+			$result = trim($result[0]);
+			$result = substr($result, strpos($result, "{"), strlen($result));
+			$result = substr($result, 0, strlen($result)-1);
+			$result = json_decode($result, true);
+			
+			$paymentTotal = array_sum($result["rawplatformtotals"]);
+			$purchaseTotal = $result["numberofcontributions"]["total"];
+			$paymentAverage = $paymentTotal / $purchaseTotal;
+
+			$avLin = $result["rawplatformtotals"]["linux"] / $result["numberofcontributions"]["linux"];
+			$avMac = $result["rawplatformtotals"]["mac"] / $result["numberofcontributions"]["mac"];
+			$avWin = $result["rawplatformtotals"]["windows"] / $result["numberofcontributions"]["windows"];
+
+			$pcLin = $result["rawplatformtotals"]["linux"] / $paymentTotal;
+			$pcMac = $result["rawplatformtotals"]["mac"] / $paymentTotal;
+			$pcWin = $result["rawplatformtotals"]["windows"] / $paymentTotal;
+
+			//TODO: Sort this out. The numbers that Humble give for each platform don't add up to the amount shown in rawtotal (which is shown on the humblebundle.com site).
+			$paymentTotal = $result["rawtotal"];
 		}
 
 		//Is there an existing record with this title?

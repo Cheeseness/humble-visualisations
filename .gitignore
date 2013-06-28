@@ -3,3 +3,6 @@ downloads/
 
 #We also don't want to grab database credentials
 dbcreds.php
+
+#And lets exclude these guys, because we don't need them
+*~

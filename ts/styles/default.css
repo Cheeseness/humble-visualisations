@@ -1,0 +1,240 @@
+body
+{
+	font-family: Helvetica,sans-serif;
+	text-align: justify;
+	background-color: #404040;
+	color: #4A4C45;
+	margin: 0;
+	padding: 0;
+}
+
+a
+{
+	color: #ff9900;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
+}
+
+#hibWidget
+{
+	border: 0 none;
+	float: right;
+	height: 141px;
+	margin-left: 20px;
+	overflow: hidden;
+	width: 423px;
+}
+
+h1, h2, h3
+{
+	color: #CC0000;
+	margin-bottom: 0;
+	margin-top: 15px;
+}
+
+footer
+{
+	color: #918E84;
+}
+
+.bundle, .intro, .widestats
+{
+	line-height: 18px;
+	background-color: #f8f8f8;
+	border-radius: 5px 5px 5px 5px;
+	box-shadow: 0px 5px 10px #000000;
+	margin: 20px;
+	padding: 1em;
+}
+.bundle
+{
+	font-size: 12px;
+	width: 430px;
+	float: left;
+	height: 610px;
+	text-align: center;
+	line-height: 18px;
+}
+
+.bundle ul
+{
+	text-align: left;
+	float: left;
+	margin: 20px 0 15px;
+	min-height: 82px;
+	width: 230px;
+}
+
+.bundle ul li
+{
+    font-weight: bold;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.bundle .statValue
+{
+	float: right;
+	border-right: 6px solid transparent;
+	padding-right: 4px;
+}
+
+p .indicatorLin, p .indicatorMac, p .indicatorWin, p .indicatorAll
+{
+	border-left: 6px solid transparent;
+	padding-left: 4px;
+}
+
+.indicatorAll
+{
+    border-color: #FF0000 !important;
+}
+
+.indicatorLin
+{
+    border-color: #333388 !important;
+}
+
+.indicatorMac
+{
+    border-color: #338833 !important;
+}
+
+.indicatorWin
+{
+    border-color: #883333 !important;
+}
+
+.indicatorInitialGames
+{
+    border-color: #3D7930 !important;
+}
+
+.indicatorExtraGames
+{
+    border-color: #A2C180 !important;
+}
+
+text
+{
+	fill: #4A4C45;
+}
+
+.x path, .y path, .axis rect
+{
+	fill: #8A8C85;
+}
+
+.x .domain
+{
+	fill: none;
+	stroke: none;
+}
+
+.x path, .y path
+{
+	shape-rendering: crispEdges;
+}
+.lines
+{
+	fill: none;
+	stroke-width: 1.5;
+}
+.y line
+{
+	stroke: #8A8C85;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
+
+.x line
+{
+	stroke: #8A8C85;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
+
+.averageLine
+{
+	shape-rendering: crispEdges;
+}
+
+.bundleAverageChart .x text
+{
+	fill: white;
+	display: none;
+}
+
+.valueChart .price rect, .bar
+{
+	shape-rendering: crispEdges;
+}
+
+.arc path
+{
+	stroke-linejoin: round;
+}
+
+.clearfix
+{
+	clear: both;
+}
+
+.widestats
+{
+	font-size: 12px;
+	clear: both;
+	padding-bottom: 25px;
+	text-align: center;
+}
+
+table
+{
+	margin-top: 2em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table th
+{
+	border-bottom: 1px solid;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+table .textColumn
+{
+	text-align: left;
+	padding-left: 1em;
+}
+
+table .numberColumn
+{
+	text-align: right;
+	padding-right: 1em;
+}
+
+table .oddRow
+{
+	background-color: #E0E0E0;
+}
+
+table .evenRow
+{
+
+}
+
+table .indie, .indicatorRed
+{
+	color: #CC0000;
+}
+
+table .non-indie, .indicatorBlue
+{
+	color: #0000CC;
+}

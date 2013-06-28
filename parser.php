@@ -1,90 +1,43 @@
 <?php
-	/**
-	* This file was created for my Humble Visualisations page which calculates extra
-	* statistics and trends for the Humble Indie Bundle promotions.
-	* I make no guarantees about its fitness for purpose.
-	* Use, modify, learn from, whatever as you see fit <3
-	* copyleft 2011 Cheeseness (public domain)
-	*/
-
-	//So that I don't share my creds, I've put functions that return my database username, password, etc. into functions that live in here. You can either create your own dbCreds.php or you can replace the function calls with strings or variables.
 	include_once("dbcreds.php");
-	
-	//Let's make sure we're pulling time in UTC, OK?
-	putenv("TZ=UTC");
+	include_once("process.php");
 
-	//Let's connect to the database server and set the database we'll be using 
-	$con = ConnectToMySQL(getDBHost(), getDBUser(), getDBPass());
-	if(!$con)
+	$debug = false;
+	if (isset($_GET['debug']))
 	{
-		echo "Cannot Connect To MySQL: " . mysql_error();
+		$debug = true;
 	}
-	ConnectToDB(getDBName(), $con);
+	$conn = null;
+	connectDB();
+	
+	$success = pullData("http://www.humblebundle.com/");
+	echo "Result: " . $success;
+	
+	function connectDB()
+	{
+		global $conn;
+		try
+		{
+			$conn = new PDO( getPDODrv() . ":dbname=" . getDBName() . ";host=" . getDBHost(), getDBUser(), getDBPass());
+			//echo "PDO connection object created";
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+	}
 
-	/**
-	* This function exports a dump of the database to a compressed file.
-	*/
-	function dumpData()
+	function closeDB()
 	{
-		passthru("mysqldump --opt --host=" . getDBHost() . " --user=" . getDBUser() . " --password=" . getDBPass() . " --databases " . getDBName() . " --add-drop-database --add-drop-table | gzip > downloads/data.sql.gz");
+		global $conn;
+		$conn = null;
 	}
-	
-	
-	/**
-	* This function attempts to give us a quick and dirty short version of the
-	* given bundle title.
-	*/
-	function getShortTitle($title)
-	{
-		return str_replace(array("The Humble Bundle for ", "The Humble Bundle ", "The Humble ", " Bundle", " Debut"),"", $title);
-	}
-	
-	
-	/**
-	* This function connects us to the specified database server using the
-	* given connection.
-	*/
-	function ConnectToMySQL($host, $user, $pass=null) {
-		global $TEST;
-		if($TEST) echo "MySQL: Connecting to MySQL Server $host as $user<br />";
-		return mysql_connect($host, $user, $pass);
-	}
-	
-	
-	/**
-	* This function selects the specified database for queries via the
-	* given connection.
-	*/
-	function ConnectToDB($dbname, $connection=null) {
-		global $TEST;
-		if($TEST)
-		{
-			echo "MySQL: Connecting to Database $dbname using connection $connection";
-		}
-		
-		if(mysql_select_db($dbname, $connection)) 
-		{
-			if($TEST)
-			{
-				echo "MySQL: Connection Successful";
-			}
-			return true;
-		}
-		else
-		{
-			if($TEST)
-			{
-				echo "MySQL: Error connecting to Database $dbname : " . mysql_error();
-			}
-			return false;
-		}
-	}
-	
-	
+
 	/**
 	* This function simplifies executing SQL queries.
 	*/
-	function runQuery($query, $output = true)
+	function 
+	runQuery($query, $output = true)
 	{
 		global $TEST;
 		if($TEST && $output)
@@ -95,71 +48,45 @@
 		return $result;
 	}
 	
-	
 	/**
-	* This function turns a string representing a dollar figure into a
-	* number.
-	* TODO: It should probably do something when the result is found to be
-	* NaN.
+	* This function exports a dump of the database to a compressed file.
+	* TODO: Is this necessary if we're also providing json representations?
 	*/
-	function parseDollars($value)
+	function dumpMYSQLData()
 	{
-		$number = (float) str_replace(array("$", ","),"", $value);
-		if (is_nan($number))
-		{
-			echo "Oh noes!";
-		}
-		return $number;
+		passthru("mysqldump --opt --host=" . getDBHost() . " --user=" . getDBUser() . " --password=" . getDBPass() . " --databases " . getDBName() . " --add-drop-database --add-drop-table | gzip > downloads/data.sql.gz");
 	}
 	
-	
-	/**
-	* This function simplifies getting information from inside DOM
-	* elements.
-	* TODO: It should probably have some sort of error checking incase the
-	* given element is not found.
-	*/
-	function getValue($elementID, $document)
+	function pullData($url)
 	{
-		$node = $document->getElementById($elementID);
-		return $node->nodeValue;
-	}
-	
-	
-	/**
-	* This function takes two values and returns the difference between
-	* as a signed dollar figure with the text " over" or " under"
-	* appended as appropriate.
-	*/
-	function getDeviationString($value, $target)
-	{
-		$deviation = $value - $target;
-		if ($deviation > 0)
-		{
-			return "+$" . number_format($deviation, 2) . " over";
-		}
-		else
-		{
-			return "-$" . number_format(abs($deviation), 2) . " under";		
-		}
-	}
-	
-	
-	/**
-	* This function reads the source of the humblebundle.com web page
-	* in, scrapes the relevant data out and inserts it into the database.
-	* If the detected bundle title does not exist in the db, a new record
-	* is created.
-	*/
-	function parseData($url)
-	{
+		global $conn;
+		global $debug;
+		
+		$bundleTitle = "Unknown";
+		$pyTotal = null;
+		$puTotal = null;
+		$pcLin = null;
+		$pcMac = null;
+		$pcWin = null;
+		$avAll = null;
+		$avLin = null;
+		$avMac = null;
+		$avWin = null;
+		$fullPriceLast = null;
+		$pyLin = null;
+		$pyMac = null;
+		$pyWin = null;
+		$puLin = null;
+		$puMac = null;
+		$puWin = null;
+		
 		//Tell the server who we are - if you use or edit this for your own purposes, please change the user agent string to something appropriate for what you're doing <3
-		ini_set("user_agent", "HumbleStatsParser (http://cheesetalks.twolofbees.com/)");
+		ini_set("user_agent", "HumbleStatsParser2 (http://cheesetalks.twolofbees.com/)");
 
 		
 		//include meklu's robots.txt parsing library
 		include_once("rbt_prs.php");
-
+		
 		//Check robots.txt to make sure we're allowed first
 		if (!isUrlBotSafe($url, ini_get("user_agent")))
 		{
@@ -176,7 +103,7 @@
 			return false;
 		}
 		
-		//We're going to use DOMDocument to pull everything out
+		//We're going to use DOMDocument to pull some stuff out out
 		$dom = new DOMDocument;
 		//We use the @ to suppress all the warnings caused by improperly escaped & chars and some questionable tag closures. Unfortunately, this means we don't get 
 		@$dom->loadHTML($page);
@@ -187,18 +114,40 @@
 			return false;
 		}
 		
-		//All these things are simple to get out
-		$paymentTotal = parseDollars(getValue('totalcontributed', $dom));
-		$paymentAverage = parseDollars(getValue('averagecontribution', $dom));
-		$avLin = parseDollars(getValue('averagelinux', $dom));
-		$avMac = parseDollars(getValue('averagemac', $dom));
-		$avWin = parseDollars(getValue('averagewindows', $dom));
 		
 		//The bundle title can be a few different variations of things depending upon the status of the bundle, plus it has a whole stack of unnecessary whitespace
 		$bundleTitle = str_replace(array("\n", "\t"), '', strip_tags(getValue('hibtext', $dom)));
 		$bundleTitle = trim(preg_replace('/\s\s+/', ' ', $bundleTitle)); //they don't make this easy, do they?
 		$bundleTitle = str_replace("Thanks for purchasing the ", "The ", $bundleTitle); //this allows us to parse saved download pages (we can't pull them live since robots.txt doesn't allow it
 		$bundleTitle = str_replace("!", "", $bundleTitle);
+
+		if ($bundleTitle == "")
+		{
+			//And now we have weekly stuff D:
+			$headings = $dom->getElementsByTagName("h2");
+			foreach ($headings as $h)
+			{
+				if (stripos($h->nodeValue, "weekly") !== false)
+				{
+					$bundleTitle = trim($h->nodeValue);
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+				}
+				else if (stripos($h->nodeValue, "the humble") !== false)
+				{
+					$bundleTitle = trim($h->nodeValue);
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+				}
+			}
+		}
+
+
+
 		
 		//Let's check and see if the bundle is finished
 		$isOver = false;
@@ -210,76 +159,86 @@
 		}
 
 		//The "full price" value is tricky to grab as well
-		$fullPrice = getValue('pwyw', $dom);
+		$fullPriceLast = getValue('pwyw', $dom);
 		//We don't need the HTML tags (in fact, they're just going to get in the way
-	        $fullPrice = strip_tags($fullPrice);
+	        $fullPriceLast = strip_tags($fullPriceLast);
 	        //Shorten the string to everything from $ symbol
-		$fullPrice = substr($fullPrice, strpos($fullPrice, "$"));
+		$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
 		//And now let's drop everything from (including) the first space, as well as the $ symbol
-		$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
-
-		$purchaseTotal = "Unknown";
+		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
 
 		//guess what, the purchase total span is only identified by a class. Yay.
 		$pathfinder = new DomXPath($dom); //because who doesn't like things called Pathfinder?
-		$nodes = $pathfinder->query("//span[ contains (@class, 'totalcontributions') ]");
-		foreach ($nodes as $node)
+
+		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
+		foreach ($othernodes as $node)
 		{
-			$purchaseTotal = parseDollars($node->nodeValue);
-		}
-			
-		//Time to parse some data out of the chart URL
-		$chartNode = $dom->getElementById('googlechart');
-		$chartURL = parse_url($chartNode->getAttribute('src'));
-		$chartURL = split("&", $chartURL['query']);
-	
-		$chartElements = array();
-		foreach ($chartURL as $key => $value)
-		{
-			$temp = split("=", $value);
-			$chartElements[$temp[0]] = $temp[1];
-		}
-	
-		//Chop up the colour and data params, remembering to remove the t: (two chars) from the beginning of the data set
-		$colours = split("\|", $chartElements['chco']);
-		$data = split(",", $chartElements['chd']);
-		$data[0] = substr($data[0], 2);
-		
-		//I find this immensely confusing. The r *should* indicate that the label/colour order is the reverse of the data set order, but it doesn't seem to be. Oh well.
-		if ($chartElements['chdlp'] == "r")
-		{
-			//$data = array_reverse($data);
-		}
-		
-		$pcLin = 0;
-		$pcMac = 0;
-		$pcWin = 0;
-		
-		//Work out which data element is for which platform based on the colours assignment: Lin Blue, Mac Green, Win Red
-		foreach ($colours as $index => $platform)
-		{
-			if ($platform == "333388")
+			$fullPriceLast = $node->nodeValue;
+
+			if ($debug)
 			{
-				$pcLin = $data[$index];
+				echo "Full price: " . $fullPriceLast . "\n";
 			}
-			else if ($platform == "338833")
-			{
-				$pcMac = $data[$index];
-			}
-			else if ($platform == "992222")
-			{
-				$pcWin = $data[$index];
-			}
+
+			$fullPriceLast = strip_tags($fullPriceLast);
+			//Shorten the string to everything from $ symbol
+			$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
+			//And now let's drop everything from (including) the first space, as well as the $ symbol
+			$fullPriceLast = floatval(substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1));
+
 		}
 
+		
+		$pattern = "(^.*initial_stats_data\':.*$)m";
+		if (preg_match($pattern, $page, $result))
+		{
+			$result = trim($result[0]);
+			$result = substr($result, strpos($result, "{"), strlen($result));
+			$result = substr($result, 0, strlen($result)-1);
+			$result = json_decode($result, true);
+			
+			if ($debug)
+			{
+				print_r($result);
+			}
+			
+			$pyTotal = array_sum($result["rawplatformtotals"]);
+			$puTotal = $result["numberofcontributions"]["total"];
+			$avAll = $pyTotal / $puTotal;
+
+			$pyLin = $result["rawplatformtotals"]["linux"];
+			$pyMac = $result["rawplatformtotals"]["mac"];
+			$pyWin = $result["rawplatformtotals"]["windows"];
+
+			$puLin = $result["numberofcontributions"]["linux"];
+			$puMac = $result["numberofcontributions"]["mac"];
+			$puWin = $result["numberofcontributions"]["windows"];
+
+			$avLin = $result["rawplatformtotals"]["linux"] / $result["numberofcontributions"]["linux"];
+			$avMac = $result["rawplatformtotals"]["mac"] / $result["numberofcontributions"]["mac"];
+			$avWin = $result["rawplatformtotals"]["windows"] / $result["numberofcontributions"]["windows"];
+
+			$pcLin = $result["rawplatformtotals"]["linux"] / $pyTotal;
+			$pcMac = $result["rawplatformtotals"]["mac"] / $pyTotal;
+			$pcWin = $result["rawplatformtotals"]["windows"] / $pyTotal;
+
+			//TODO: Sort this out. The numbers that Humble give for each platform don't add up to the amount shown in rawtotal (which is shown on the humblebundle.com site).
+			$paymentTotal = $result["rawtotal"];
+		}
+		
 		//Is there an existing record with this title?
-		$query = "select id from scrapedata where bundleTitle = '" . $bundleTitle . "'";
-		$result = runQuery($query);
-		if(mysql_num_rows($result) > 0)
+		$query = "select id from newdata where bundleTitle = '" . $bundleTitle . "' limit 1";
+		$stmt = $conn->query($query);
+		$existingRecord = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if ($debug)
+		{
+			print_r($existingRecord);
+		}
+		if(count($existingRecord) > 0)
 		{
 			//Update the existing record
-			$existingRecord = mysql_fetch_array($result, MYSQL_ASSOC);
-			$query = "update scrapedata set lastUpdated = utc_timestamp(), paymentTotal = '" . $paymentTotal . "', purchaseTotal = '" . $purchaseTotal . "', pcLin = '" . $pcLin . "', pcMac = '" . $pcMac . "', pcWin = '" . $pcWin . "', paymentAverage = '" . $paymentAverage . "', avLin = '" . $avLin . "', avMac = '" . $avMac . "', avWin = '" . $avWin . "', fullPriceLast = '" . $fullPrice . "'";
+			//$query = "update newdata set lastUpdated = utc_timestamp(), pyTotal = '" . $pyTotal . "', puTotal = '" . $puTotal . "', pcLin = '" . $pcLin . "', pcMac = '" . $pcMac . "', pcWin = '" . $pcWin . "', avAll = '" . $avAll . "', avLin = '" . $avLin . "', avMac = '" . $avMac . "', avWin = '" . $avWin . "', fullPriceLast = '" . $fullPriceLast . "', pyLin = '" . $pyLin . "', pyMac = '" . $pyMac . "', pyWin = '" . $pyWin . "', puLin = '" . $puLin . "', puMac = '" . $puMac . "', puWin = '" . $puWin . "'";
+			$query = "update newdata set lastUpdated = utc_timestamp(), pyTotal = :pyTotal, puTotal = :puTotal, pcLin = :pcLin, pcMac = :pcMac, pcWin = :pcWin, avAll = :avAll, avLin = :avLin, avMac = :avMac, avWin = :avWin, fullPriceLast = :fullPriceLast, pyLin = :pyLin, pyMac = :pyMac, pyWin = :pyWin, puLin = :puLin, puMac = :puMac, puWin = :puWin";
 			if (!$isOver)
 			{
 				$query .= ", lastSeen = utc_timestamp()";
@@ -288,23 +247,46 @@
 			{
 				$query .= ", isOver = 1";
 			}
-			
-			$query .= " where id = '" . $existingRecord['id']. "'";
-			$result2 = runQuery($query);
-			
-			//Do an updated dump of the database and return the number of rows that the query updated (it's not really that relevant, but it's nice for debugging)
-			dumpData();
-			return mysql_affected_rows();
+			$query .= " where id = :id";
+
+
+
+			if ($debug)
+			{
+				echo $query;
+				return;
+			}
+			else
+			{
+				$stmt = $conn->prepare($query);
+				$success = $stmt->execute(array('pyTotal' => $pyTotal, 'puTotal' => $puTotal, 'pcLin' => $pcLin, 'pcMac' => $pcMac, 'pcWin' => $pcWin, 'avAll' => $avAll, 'avLin' => $avLin, 'avMac' => $avMac, 'avWin' => $avWin, 'fullPriceLast' => $fullPriceLast, 'pyLin' => $pyLin, 'pyMac' => $pyMac, 'pyWin' => $pyWin, 'puLin' => $puLin, 'puMac' => $puMac, 'puWin' => $puWin, 'id' => $existingRecord[0]['id']));
+
+				//Do an updated dump of the database and return the number of rows that the query updated (it's not really that relevant, but it's nice for debugging)
+				dumpMySQLData();
+				return $success;
+			}
 		}
 		else
 		{
 			//Insert our discovered data
-			$query = "insert into scrapedata (bundleTitle, lastUpdated, paymentTotal, purchaseTotal, pcLin, pcMac, pcWin, paymentAverage, avLin, avMac, avWin, firstSeen, fullPriceFirst, fullPriceLast) values ('" . $bundleTitle . "', utc_timestamp(), '" . $paymentTotal . "', '" . $purchaseTotal . "', '" . $pcLin . "', '" . $pcMac . "', '" . $pcWin . "', '" . $paymentAverage . "', '" . $avLin . "', '" . $avMac . "', '" . $avWin . "', utc_timestamp(), '" . $fullPrice . "', '" . $fullPrice . "')";
-			$result2 = runQuery($query);
-			
-			//Do an updated dump of the database and return the number of rows that the query inserted (it's not really that relevant, but it's nice for debugging)
-			dumpData();
-			return mysql_affected_rows();
+			//$query = "insert into newdata (bundleTitle, pyTotal, puTotal, pcLin, pcMac, pcWin, avAll, avLin, avMac, avWin, firstSeen, fullPriceFirst, fullPriceLast, lastSeen, pyLin, pyMac, pyWin, puLin, puMac, puWin) values ('" . $bundleTitle . "', '" . $pyTotal . "', '" . $puTotal . "', '" . $pcLin . "', '" . $pcMac . "', '" . $pcWin . "', '" . $avAll . "', '" . $avLin . "', '" . $avMac . "', '" . $avWin . "', utc_timestamp() , '" . $fullPriceLast . "', '" . $fullPriceLast . "', utc_timestamp() , '" . $pyLin . "', '" . $pyMac . "', '" . $pyWin . "', '" . $puLin . "', '" . $puMac . "', '" . $puWin . "')";
+			$query = "insert into newdata (bundleTitle, pyTotal, puTotal, pcLin, pcMac, pcWin, avAll, avLin, avMac, avWin, firstSeen, fullPriceFirst, fullPriceLast, lastSeen, pyLin, pyMac, pyWin, puLin, puMac, puWin) values ( :bundleTitle, :pyTotal, :puTotal, :pcLin, :pcMac, :pcWin, :avAll, :avLin, :avMac, :avWin, utc_timestamp(), :fullPriceLast, :fullPriceLast, utc_timestamp(), :pyLin, :pyMac, :pyWin, :puLin, :puMac, :puWin)";
+
+			if ($debug)
+			{
+				echo $query;
+				return;
+			}
+			else
+			{
+				$stmt = $conn->prepare($query);
+				$success = $stmt->execute(array('bundleTitle' => $bundleTitle, 'pyTotal' => $pyTotal, 'puTotal' => $puTotal, 'pcLin' => $pcLin, 'pcMac' => $pcMac, 'pcWin' => $pcWin, 'avAll' => $avAll, 'avLin' => $avLin, 'avMac' => $avMac, 'avWin' => $avWin, 'fullPriceFirst' => $fullPriceLast, 'fullPriceLast' => $fullPriceLast, 'pyLin' => $pyLin, 'pyMac' => $pyMac, 'pyWin' => $pyWin, 'puLin' => $puLin, 'puMac' => $puMac, 'puWin' => $puWin));
+				//Do an updated dump of the database and return the number of rows that the query updated (it's not really that relevant, but it's nice for debugging)
+				dumpMySQLData();
+				return $success;
+			}
 		}
 	}
+
+
 ?>
