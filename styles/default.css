@@ -315,7 +315,7 @@ text
 
 .hoverTargets rect
 {
-	fill: transparent;
+	fill: rgba(0, 0, 0, 0);
 }
 
 .hoverTargets rect:hover
