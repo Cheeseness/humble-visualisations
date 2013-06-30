@@ -38,10 +38,10 @@ function getSensibleDate(currentDate, withTime)
 function buildDate(string)
 {
 	string = string.split(/[\s:-]+/);
-	newDate = new Date();
-	newDate.setUTCFullYear(string[0]);
-	newDate.setUTCMonth(string[1] - 1);
-	newDate.setUTCDate(string[2]);
+	newDate = new Date(string[0], string[1] - 1, string[2]);
+//	newDate.setUTCFullYear(string[0]);
+//	newDate.setUTCMonth(string[1] - 1);
+//	newDate.setUTCDate(string[2]);
 	newDate.setUTCHours(string[3]);
 	newDate.setUTCMinutes(string[4]);
 	newDate.setUTCSeconds(string[5]);
