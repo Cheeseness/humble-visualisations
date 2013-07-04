@@ -196,6 +196,9 @@
 			return false;
 		}
 		
+		//Some of the stuff we're interested in is only accessible via class name. Yay.
+		$pathfinder = new DomXPath($dom); //because who doesn't like things called Pathfinder?
+		
 		//All these things are simple to get out
 		$paymentTotal = parseDollars(getValue('totalcontributed', $dom));
 		$paymentAverage = parseDollars(getValue('averagecontribution', $dom));
@@ -228,6 +231,25 @@
 				}
 			}
 		}
+		//New page markup is getting harder to pull the bundle title from, so let's try getting it from the alt attribute of the logo when all else fails
+		if ($bundleTitle == "")
+		{
+			$nodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' bundle-logo ' )]");
+			foreach ($nodes as $node)
+			{
+				$img = $node->getElementsByTagName("img");
+				foreach ($img as $i)
+				if ($i->hasAttribute("alt"))
+				{
+					$i = $i->getAttribute("alt");
+					if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
+					{
+						$bundleTitle = $i;
+					}
+				}
+			}
+		
+		}
 
 
 		//Let's check and see if the bundle is finished
@@ -250,8 +272,6 @@
 
 		$purchaseTotal = "Unknown";
 
-		//guess what, the purchase total span is only identified by a class. Yay.
-		$pathfinder = new DomXPath($dom); //because who doesn't like things called Pathfinder?
 		$nodes = $pathfinder->query("//span[ contains (@class, 'totalcontributions') ]");
 		foreach ($nodes as $node)
 		{

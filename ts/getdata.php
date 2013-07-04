@@ -62,6 +62,14 @@
 		{
 			$bundleTitle = "The Humble Bundle with Android 6";
 		}
+		else if (strcasecmp($t, "ebook 2") == 0)
+		{
+			$bundleTitle = "Humble eBook Bundle 2";
+		}
+		if (strcasecmp($t, "chicken") == 0)
+		{
+			$bundleTitle = "The Humble Bundle with Android 5";
+		}
 	}
 
 	$bundleData = getData($bundleTitle);

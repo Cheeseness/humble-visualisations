@@ -114,6 +114,9 @@
 			return false;
 		}
 		
+		//Some of the stuff we're interested in is only accessible via class name. Yay.
+		$pathfinder = new DomXPath($dom); //because who doesn't like things called Pathfinder?
+		
 		
 		//The bundle title can be a few different variations of things depending upon the status of the bundle, plus it has a whole stack of unnecessary whitespace
 		$bundleTitle = str_replace(array("\n", "\t"), '', strip_tags(getValue('hibtext', $dom)));
@@ -145,7 +148,27 @@
 				}
 			}
 		}
-
+		
+		//New page markup is getting harder to pull the bundle title from, so let's try getting it from the alt attribute of the logo when all else fails
+		if ($bundleTitle == "")
+		{
+			$nodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' bundle-logo ' )]");
+			foreach ($nodes as $node)
+			{
+				$img = $node->getElementsByTagName("img");
+				foreach ($img as $i)
+				if ($i->hasAttribute("alt"))
+				{
+					$i = $i->getAttribute("alt");
+					if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
+					{
+						$bundleTitle = $i;
+					}
+				}
+			}
+		
+		}
+			
 
 
 		
@@ -166,9 +189,6 @@
 		$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
 		//And now let's drop everything from (including) the first space, as well as the $ symbol
 		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
-
-		//guess what, the purchase total span is only identified by a class. Yay.
-		$pathfinder = new DomXPath($dom); //because who doesn't like things called Pathfinder?
 
 		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
 		foreach ($othernodes as $node)
@@ -232,6 +252,7 @@
 		$existingRecord = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		if ($debug)
 		{
+			print ("Existing record for " . $bundleTitle . ":\n");
 			print_r($existingRecord);
 		}
 		if(count($existingRecord) > 0)

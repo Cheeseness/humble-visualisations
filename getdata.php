@@ -315,7 +315,9 @@
 			{
 				$query .= " where " . implode($conditions, ",");
 			}
-
+			
+			$query .= " order by lastUpdated";
+			
 			if ($limit > 0)
 			{
 				$query .= " limit :limit"; 
