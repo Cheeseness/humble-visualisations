@@ -692,11 +692,11 @@ var makeAverageChart = function (data)
 //		.ticks(20)
 		.scale(avX);
 
-	avMax = d3.max(data, function (d) { return d3.max([+d.avWin, +d.avMac, +d.avLin]); });
+	avAgg = d3.max(data, function (d) { return d3.max([+d.avWin, +d.avMac, +d.avLin]); });
 	console.log(avMax);
 	var avY = d3.scale.linear()
 		.range([0, chartHeight])
-		.domain([avMax, 0]);
+		.domain([avAgg ? avAgg : avMax, 0]);
 	
 	var avAxisY = d3.svg.axis()
 		.orient("left")
