@@ -316,7 +316,7 @@
 				$query .= " where " . implode($conditions, ",");
 			}
 			
-			$query .= " order by lastUpdated";
+			$query .= " order by firstSeen";
 			
 			if ($limit > 0)
 			{
