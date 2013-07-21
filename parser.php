@@ -128,6 +128,12 @@
 		{
 			//And now we have weekly stuff D:
 			$headings = $dom->getElementsByTagName("h2");
+			
+			
+			
+			
+			//Let's check and see if the bundle is finished
+			$isOver = false;
 			foreach ($headings as $h)
 			{
 				if (stripos($h->nodeValue, "weekly") !== false)
@@ -145,6 +151,13 @@
 					{
 						echo "Found: " . $bundleTitle . "\n";
 					}
+				}
+				
+				if (stripos($bundleTitle, " is now") !== false)
+				{
+					$bundleTitle = str_replace(" is now closed", "", $bundleTitle); //This stops us from making a new entry for closed bundles :D
+					$bundleTitle = str_replace(" is now over", "", $bundleTitle); //This wording for expired bundles was added with the Botanicula Debut
+					$isOver = true;
 				}
 			}
 		}
@@ -167,18 +180,6 @@
 				}
 			}
 		
-		}
-			
-
-
-		
-		//Let's check and see if the bundle is finished
-		$isOver = false;
-		if (stripos($bundleTitle, " is now") !== false)
-		{
-			$bundleTitle = str_replace(" is now closed", "", $bundleTitle); //This stops us from making a new entry for closed bundles :D
-			$bundleTitle = str_replace(" is now over", "", $bundleTitle); //This wording for expired bundles was added with the Botanicula Debut
-			$isOver = true;
 		}
 
 		//The "full price" value is tricky to grab as well
