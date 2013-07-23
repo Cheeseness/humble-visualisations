@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "spiderweb";
+	$title = "jim+guthrie";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -44,6 +44,7 @@
 		<li><a href = '?bundle=rochard'>Humble Weekly Sale: Rochard</a></li>
 		<li><a href = '?bundle=two+tribes'>Humble Weekly Sale: Two Tribes</a></li>
 		<li><a href = '?bundle=spiderweb'>Humble Weekly Sale: Spiderweb Software</a></li>
+		<li><a href = '?bundle=jim+guthrie'>Humble Weekly Sale: Jim Guthrie and Friends</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../ts/'>Humble Bundle promotions</a>.</p>
