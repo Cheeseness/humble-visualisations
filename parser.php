@@ -153,11 +153,16 @@
 					}
 				}
 				
-				if (stripos($bundleTitle, " is now") !== false)
+				if (stripos($h->nodeValue, " is now") !== false)
 				{
 					$bundleTitle = str_replace(" is now closed", "", $bundleTitle); //This stops us from making a new entry for closed bundles :D
 					$bundleTitle = str_replace(" is now over", "", $bundleTitle); //This wording for expired bundles was added with the Botanicula Debut
 					$isOver = true;
+					if ($debug)
+					{
+						echo "Is over: " . $isOver . "\n";
+					}
+
 				}
 			}
 		}
@@ -176,6 +181,10 @@
 					if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
 					{
 						$bundleTitle = $i;
+						if ($debug)
+						{
+							echo "Found: " . $bundleTitle . "\n";
+						}
 					}
 				}
 			}
