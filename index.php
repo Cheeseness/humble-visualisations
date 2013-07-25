@@ -85,11 +85,12 @@
 <div id = 'sightings' class = 'popup'>
 	<h2>Spotted Citings</h2>
 	<ul>
+		<li><a href = 'http://www.reclaimyourgame.com/content.php/222-RYG-Interviews-Cheese'>RYG Interviews Josh Bush (Cheese)</a> - In September 2012, Reclaim Your Game interviewed me about the Humble Bundle stats work I've been doing.</li>
+		<li><a href = 'http://news.softpedia.com/news/Linux-Users-Pay-More-for-Humble-Bundles-than-Mac-Windows-294778.shtml'>Linux Users Pay More for Humble Bundles than Mac/Windows Ones</a> - A small news post on Softpedia dated September 2012 highlighting high Linux averages.</li>
+		<li><a href = 'http://www.freiesmagazin.de/mobil/freiesMagazin-2012-06-bilder.html'>freies Magazin</a> The June 2012 edition of freies Magazine cited the Humble Visualisations in an editorial about Linux as a viable gaming platform.</li>
+		<li><a href = 'http://www.smh.com.au/it-pro/innovation/blogs/smoke--mirrors/bundle-of-joy-winning-formula-tested-on-ebooks-20121012-27h34.html'>The Humble Bundle brings ebooks to their offerings</a> - A look at the Humble eBook Bundle within the context of Humble Bundle history by George Wright, columnist for the Sydney Morning Herald.</li>
 		<li><a href = 'http://www.heise.de/open/artikel/Die-Woche-Die-Linux-Spiele-kommen-1648026.html'>Die Woche: Die Linux-Spiele kommen</a> - An article on German open source news site heise.de, which talks about how Linux users are willing to pay for games.</li>
 		<li><a href = 'http://en.wikipedia.org/wiki/Humble_Indie_Bundle'>Humble Indie Bundle</a> - It seems this page has been mentioned on the German Humble Indie Bundle Wikipedia article.</li>
-		<li><a href = 'http://www.reclaimyourgame.com/content.php/222-RYG-Interviews-Cheese'>RYG Interviews Josh Bush (Cheese)</a> - In September 2012, Reclaim Your Game interviewed me about the Humble Bundle stats work I've been doing.</li>
-		<li><a href = 'http://news.softpedia.com/news/Linux-Users-Pay-More-for-Humble-Bundles-than-Mac-Windows-294778.shtml'>Linux Users Pay More for Humble Bundles than Mac/Windows Ones</a> - A small news post on Softpedia highlighting high Linux averages.</li>
-		<li><a href = 'http://www.smh.com.au/it-pro/innovation/blogs/smoke--mirrors/bundle-of-joy-winning-formula-tested-on-ebooks-20121012-27h34.html'>The Humble Bundle brings ebooks to their offerings</a> - A look at the Humble eBook Bundle within the context of Humble Bundle history by George Wright, columnist for the Sydney Morning Herald.</li>
 	</ul>
 	<p>If you find something I've missed, please <a href = 'mailto:cheese@twolofbees.com'>let me know</a>.</p>
 	<h2>Cheese's Articles</h2>
