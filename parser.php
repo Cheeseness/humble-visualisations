@@ -193,13 +193,9 @@
 
 		//The "full price" value is tricky to grab as well
 		$fullPriceLast = getValue('pwyw', $dom);
-		//We don't need the HTML tags (in fact, they're just going to get in the way
-	        $fullPriceLast = strip_tags($fullPriceLast);
-	        //Shorten the string to everything from $ symbol
-		$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
-		//And now let's drop everything from (including) the first space, as well as the $ symbol
-		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
-
+		
+		//Now with even more trickiness
+		
 		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
 		foreach ($othernodes as $node)
 		{
@@ -209,14 +205,28 @@
 			{
 				echo "Full price: " . $fullPriceLast . "\n";
 			}
-
-			$fullPriceLast = strip_tags($fullPriceLast);
-			//Shorten the string to everything from $ symbol
-			$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
-			//And now let's drop everything from (including) the first space, as well as the $ symbol
-			$fullPriceLast = floatval(substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1));
-
 		}
+		
+		$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+		foreach ($yetmorenodes as $node)
+		{
+			$pgraphs = $node->getElementsByTagName("p");
+			foreach ($pgraphs as $i)
+			{
+				if (stripos($i->nodeValue, "$") !== false)
+				{
+					$fullPriceLast = $i->nodeValue;
+				}
+			}
+		}
+		
+		//We don't need the HTML tags (in fact, they're just going to get in the way
+	        $fullPriceLast = strip_tags($fullPriceLast);
+	        //Shorten the string to everything from $ symbol
+		$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
+		//And now let's drop everything from (including) the first space, as well as the $ symbol
+		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
+
 
 		
 		$pattern = "(^.*initial_stats_data\':.*$)m";
