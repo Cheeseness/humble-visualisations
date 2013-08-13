@@ -263,6 +263,28 @@
 
 		//The "full price" value is tricky to grab as well
 		$fullPrice = getValue('pwyw', $dom);
+
+		//And it just got trickier
+		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
+		foreach ($othernodes as $node)
+		{
+			echo "<!-- found? -->";
+			$fullPrice = $node->nodeValue;
+		}
+
+		$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+		foreach ($yetmorenodes as $node)
+		{
+			$pgraphs = $node->getElementsByTagName("p");
+			foreach ($pgraphs as $i)
+			{
+				if (stripos($i->nodeValue, "$") !== false)
+				{
+					$fullPriceLast = $i->nodeValue;
+				}
+			}
+		}
+
 		//We don't need the HTML tags (in fact, they're just going to get in the way
 	        $fullPrice = strip_tags($fullPrice);
 	        //Shorten the string to everything from $ symbol
@@ -276,21 +298,7 @@
 		foreach ($nodes as $node)
 		{
 			$purchaseTotal = parseDollars($node->nodeValue);
-		}
-		
-		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
-		foreach ($othernodes as $node)
-		{
-			echo "<!-- found? -->";
-			$fullPrice = $node->nodeValue;
-			$fullPrice = strip_tags($fullPrice);
-			//Shorten the string to everything from $ symbol
-			$fullPrice = substr($fullPrice, strpos($fullPrice, "$"));
-			//And now let's drop everything from (including) the first space, as well as the $ symbol
-			$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
-
-		}
-		
+		}	
 		$chartURL = array();
 
 		//Time to parse some data out of the chart URL

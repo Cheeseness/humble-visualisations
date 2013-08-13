@@ -66,9 +66,14 @@
 		{
 			$bundleTitle = "Humble eBook Bundle 2";
 		}
+		else if (strcasecmp($t, "deep silver") == 0)
+		{
+			$bundleTitle = "The Humble Deep Silver Bundle";
+		}
 		if (strcasecmp($t, "chicken") == 0)
 		{
-			$bundleTitle = "The Humble Bundle with Android 5";
+			#$bundleTitle = "The Humble Bundle with Android 5";
+			$bundleTitle = "Oops";
 		}
 	}
 
