@@ -278,9 +278,9 @@
 			$pgraphs = $node->getElementsByTagName("p");
 			foreach ($pgraphs as $i)
 			{
-				if (stripos($i->nodeValue, "$") !== false)
+				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 				{
-					$fullPriceLast = $i->nodeValue;
+					$fullPrice = $i->nodeValue;
 				}
 			}
 		}
@@ -291,6 +291,13 @@
 		$fullPrice = substr($fullPrice, strpos($fullPrice, "$"));
 		//And now let's drop everything from (including) the first space, as well as the $ symbol
 		$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
+		//And last but not least, let's kill any pesky trailing (or otherwise) commas
+		$fullPrice = str_ireplace(",", "", $fullPrice);
+
+		if ($debug)
+		{
+			echo "\nFull price: " . $fullPrice . "\n\n";
+		}
 
 		$purchaseTotal = "Unknown";
 

@@ -213,12 +213,19 @@
 			$pgraphs = $node->getElementsByTagName("p");
 			foreach ($pgraphs as $i)
 			{
-				if (stripos($i->nodeValue, "$") !== false)
+				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 				{
 					$fullPriceLast = $i->nodeValue;
+					break;
+				}
+
+				if ($debug)
+				{
+					echo "Full price: " . $fullPriceLast . "\n";
 				}
 			}
 		}
+		
 		
 		//We don't need the HTML tags (in fact, they're just going to get in the way
 	        $fullPriceLast = strip_tags($fullPriceLast);
@@ -226,8 +233,13 @@
 		$fullPriceLast = substr($fullPriceLast, strpos($fullPriceLast, "$"));
 		//And now let's drop everything from (including) the first space, as well as the $ symbol
 		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
+		//And last but not least, let's kill any pesky trailing (or otherwise) commas
+		$fullPriceLast = str_ireplace(",", "", $fullPriceLast);
 
-
+		if ($debug)
+		{
+			echo "\nFull price: " . $fullPriceLast . "\n\n";
+		}
 		
 		$pattern = "(^.*initial_stats_data\':.*$)m";
 		if (preg_match($pattern, $page, $result))
