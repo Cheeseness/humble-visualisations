@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "bollocks";
+	$title = "comedy";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -49,6 +49,7 @@
 		<li><a href = '?bundle=eBook+2'>Humble eBook Bundle 2</a></li>
 		<li><a href = '?bundle=deep+silver'>Humble Deep Silver Bundle</a> (missing separate price value data - was initially $190 and rose to $230)</li>
 		<li><a href = '?bundle=bollocks'>Humble Origin Bundle</a></li>
+		<li><a href = '?bundle=comedy'>Humble Comedy Bundle</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../weekly/'>Humble Weekly Sales</a>.</p>

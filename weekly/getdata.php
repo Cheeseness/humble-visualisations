@@ -69,6 +69,10 @@
 		{
 			$bundleTitle = "Humble Weekly Sale: Hosted by PewDiePie";
 		}
+		else if (strcasecmp($_GET['bundle'], "paradox") == 0)
+		{
+			$bundleTitle = "The Humble Weekly Sale: Paradox Interactive";
+		}
 		else if (strcasecmp($_GET['bundle'], "chicken") == 0)
 		{
 			$bundleTitle = "Humble Weekly Sale: Chicken";

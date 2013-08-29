@@ -197,6 +197,10 @@ function init()
 			{
 				aggregateData[i].type = "ebook";
 			}
+			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("comedy") >= 0)
+			{
+				aggregateData[i].type = "comedy";
+			}
 			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("mobile") >= 0)
 			{
 				aggregateData[i].type = "mobile";
@@ -273,6 +277,10 @@ function init()
 			else if (data[i].bundleTitle.toLowerCase().indexOf("ebook") >= 0)
 			{
 				data[i].type = "ebook";
+			}
+			else if (data[i].bundleTitle.toLowerCase().indexOf("comedy") >= 0)
+			{
+				data[i].type = "comedy";
 			}
 			else if (data[i].bundleTitle.toLowerCase().indexOf("mobile") >= 0)
 			{
@@ -535,7 +543,7 @@ var makeTimeline = function(data)
 				})
 			.on("click", function (d) { showHelper("footnotes"); return false; });
 	tableTarget.append("p")
-		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook and music bundles.");
+		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook, music and comedy bundles.");
 	tableTarget.append("p")
 		.text("Points are placed based on start date and do not indicate duration.");
 

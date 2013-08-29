@@ -74,6 +74,10 @@
 		{
 			$bundleTitle = "The Humble Origin Bundle";
 		}
+		else if ((strcasecmp($t, "comedy") == 0) || (strcasecmp($t, "origin") == 0))
+		{
+			$bundleTitle = "The Humble Comedy Bundle";
+		}
 		if (strcasecmp($t, "chicken") == 0)
 		{
 			#$bundleTitle = "The Humble Bundle with Android 5";

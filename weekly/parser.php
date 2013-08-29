@@ -229,6 +229,7 @@
 				{
 					$bundleTitle = $h->nodeValue;
 					echo "<!--" . $bundleTitle . "-->";
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
 			}
 		}
