@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "arcen";
+	$title = "retro";
 	if (isset($_GET['bundle']))
 	{
-		$title = urldecode($_GET['bundle']);
+		$title = urldecode($_GET['retro']);
 	}
 ?>
 <head>
@@ -49,7 +49,8 @@
 		<li><a href = '?bundle=introversion'>Humble Weekly Sale: Introversion</a></li>
 		<li><a href = '?bundle=pewdiepie'>Humble Weekly Sale: PewDiePie</a></li>
 		<li><a href = '?bundle=paradox'>Humble Weekly Sale: Paradox Interactive</a></li>
-		<li><a href = '?bundle=paradox'>Humble Weekly Sale: Arcen Games</a></li>
+		<li><a href = '?bundle=arcen'>Humble Weekly Sale: Arcen Games</a></li>
+		<li><a href = '?bundle=retrp'>Humble Weekly Sale: Retro Shooters</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../ts/'>Humble Bundle promotions</a>.</p>
