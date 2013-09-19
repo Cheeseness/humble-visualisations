@@ -4,7 +4,7 @@
 	$title = "egosoft";
 	if (isset($_GET['bundle']))
 	{
-		$title = urldecode($_GET['retro']);
+		$title = urldecode($_GET['bundle']);
 	}
 ?>
 <head>
