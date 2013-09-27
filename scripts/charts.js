@@ -463,6 +463,7 @@ var makeTimeline = function(data)
 				"debut" : "#0000cc",
 				"music" : "#cc00cc",
 				"ebook" : "#cc00cc",
+				"comedy" : "#cc00cc",
 				};
 
 	removeLoadingImage(tableTarget);
