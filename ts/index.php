@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "indie+9";
+	$title = "mobile+2";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -51,6 +51,7 @@
 		<li><a href = '?bundle=bollocks'>Humble Origin Bundle</a></li>
 		<li><a href = '?bundle=comedy'>Humble Comedy Bundle</a></li>
 		<li><a href = '?bundle=indie+9'>Humble Indie Bundle 9</a></li>
+		<li><a href = '?bundle=mobile+2'>Humble Mobile Bundle 2</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../weekly/'>Humble Weekly Sales</a>.</p>
