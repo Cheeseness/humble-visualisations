@@ -93,6 +93,10 @@
 		{
 			$bundleTitle = "The Humble Weekly Sale: Nordic Games";
 		}
+		else if (strcasecmp($_GET['bundle'], "Focus") == 0)
+		{
+			$bundleTitle = "The Humble Weekly Sale: Focus Home Interactive";
+		}
 		else if (strcasecmp($_GET['bundle'], "chicken") == 0)
 		{
 			$bundleTitle = "Humble Weekly Sale: Chicken";
