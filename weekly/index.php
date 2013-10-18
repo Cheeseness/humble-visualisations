@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "focus";
+	$title = "hothead";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -55,6 +55,7 @@
 		<li><a href = '?bundle=calypso'>Humble Weekly Sale: Kalypso Media</a></li>
 		<li><a href = '?bundle=nordic'>Humble Weekly Sale: Nordic Games</a></li>
 		<li><a href = '?bundle=focus'>Humble Weekly Sale: Focus Home Interactive</a></li>
+		<li><a href = '?bundle=hothead'>Humble Weekly Sale: Hothead Games</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../ts/'>Humble Bundle promotions</a>.</p>
