@@ -12,7 +12,7 @@ var helperTargetsWrapper;
 
 function getShortTitle(title)
 {
-	return title.replace(/(The\sHumble\sBundle\sfor\s)/gi, "").replace(/(The\sHumble\sBundle\swith\s)/gi, "").replace(/(Humble\sBundle\swith\s)/gi, "").replace(/(The\sHumble\sBundle\s)/gi, "").replace(/(The\sHumble\s)/gi, "").replace(/(Humble\s)/gi, "").replace(/(\sBundle)/gi, "").replace(/(\sDebut)/gi,"");
+	return title.replace(/(The\sHumble\sBundle\sfor\s)/gi, "").replace(/(The\sHumble\sBundle\swith\s)/gi, "").replace(/(Humble\sBundle\swith\s)/gi, "").replace(/(The\sHumble\sBundle\s)/gi, "").replace(/(The\sHumble\s)/gi, "").replace(/(Humble\s)/gi, "").replace(/(\sBundle)/gi, "").replace(/(Bundle:\sPC\sand\s)/gi, "").replace(/(\sDebut)/gi,"");
 }
 
 function zeroPad(number)
