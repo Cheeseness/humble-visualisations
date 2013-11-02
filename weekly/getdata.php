@@ -101,6 +101,14 @@
 		{
 			$bundleTitle = "The Humble Weekly Sale: Hothead Games";
 		}
+		else if (strcasecmp($_GET['bundle'], "cipher") == 0)
+		{
+			$bundleTitle = "The Humble Weekly Sale: Cipher Prime";
+		}
+		else if (strcasecmp($_GET['bundle'], "team 17") == 0)
+		{
+			$bundleTitle = "The Humble Weekly Sale: Team 17";
+		}
 		else if (strcasecmp($_GET['bundle'], "chicken") == 0)
 		{
 			$bundleTitle = "Humble Weekly Sale: Chicken";

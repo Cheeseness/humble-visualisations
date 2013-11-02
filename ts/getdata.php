@@ -88,7 +88,7 @@
 		}
 		else if (strcasecmp($t, "android 7") == 0)
 		{
-			$bundleTitle = "The Humble Bundle with Android 7";
+			$bundleTitle = "The Humble Bundle: PC and Android 7";
 		}
 		if (strcasecmp($t, "chicken") == 0)
 		{

@@ -52,7 +52,7 @@
 		<li><a href = '?bundle=comedy'>Humble Comedy Bundle</a></li>
 		<li><a href = '?bundle=indie+9'>Humble Indie Bundle 9</a></li>
 		<li><a href = '?bundle=mobile+2'>Humble Mobile Bundle 2</a></li>
-		<li><a href = '?bundle=android+7'>Humble Bundle with Android 7</a></li>
+		<li><a href = '?bundle=android+7'>Humble Bundle: PC and Android 7</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../weekly/'>Humble Weekly Sales</a>.</p>
