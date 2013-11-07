@@ -172,10 +172,14 @@ function init()
 			aggregateData[i].priceCumulative.push({'v' : parseFloat(aggregateData[i].fullPriceLast) - parseFloat(aggregateData[i].fullPriceFirst), 'p' : "fullPriceLast", 'pc' : Math.round((parseFloat(aggregateData[i].fullPriceLast) - parseFloat(aggregateData[i].fullPriceFirst)) / parseFloat(aggregateData[i].fullPriceLast) * 100 ) / 100 });
 			aggregateData[i].variance = parseFloat(aggregateData[i].puTotal) - (parseFloat(aggregateData[i].puLin) + parseFloat(aggregateData[i].puMac) + parseFloat(aggregateData[i].puWin));
 						
-			aggregateData[i].type = "non-indie";
+			aggregateData[i].type = "other";
 			if (aggregateData[i].bundleTitle.toLowerCase().indexOf("android") >= 0)
 			{
 				aggregateData[i].type = "android";
+			}
+			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("non-indie") >= 0)
+			{
+				aggregateData[i].type = "non-indie";
 			}
 			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("indie") >= 0)
 			{
@@ -204,6 +208,10 @@ function init()
 			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("mobile") >= 0)
 			{
 				aggregateData[i].type = "mobile";
+			}
+			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("all results") >= 0)
+			{
+				aggregateData[i].type = "all";
 			}
 			i++;
 		}
