@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "daedalic";
+	$title = "bitcomposer";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -59,6 +59,7 @@
 		<li><a href = '?bundle=cipher'>Humble Weekly Sale: Cipher Prime</a></li>
 		<li><a href = '?bundle=team+17'>Humble Weekly Sale: Team 17</a></li>
 		<li><a href = '?bundle=daedalic'>Humble Weekly Sale: Daedalic Entertainment</a></li>
+		<li><a href = '?bundle=daedalic'>Humble Weekly Sale: bitComposer Games</a></li>
 	</ul>
 	
 	<p>Also available for <a href = '../ts/'>Humble Bundle promotions</a>.</p>
