@@ -54,7 +54,7 @@
 <body onload = 'javascript:showBundle(title);'>
 
 <div class = 'intro'>
-	<object id = 'hibWidget' data="http://www.humblebundle.com/_widget/html">This is meant to be a widget that shows the status of the current Humble Indie Bundle. If you can't see it, don't worry - the stats are still here :)</object>
+	<object id = 'hibWidget' data="http://www.humblebundle.com/_widget/weekly">This is meant to be a widget that shows the status of the current Humble Indie Bundle. If you can't see it, don't worry - the stats are still here :)</object>
 	<h1>Some More Humble Visualisations</h1>
 	<p>Hi!</p>
 	<p>You're looking at some work in progress stuff. You can get back to the Humble Visualisations by <a href = '../'>clicking here</a>.</p> 
