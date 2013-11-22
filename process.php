@@ -22,7 +22,7 @@
 	*/
 	function getShortTitle($title)
 	{
-		return str_replace(array("Humble Weekly Sale: ", "The Humble Weekly Sale: ", "The Humble Bundle for ", "The Humble Bundle with ", "Humble Bundle with ", "The Humble Bundle ", "The Humble ", "Humble ", " Bundle", " Debut"),"", $title);
+		return str_replace(array("The Humble Weekly Sale: ", "Humble Weekly Sale: ", "The Humble Bundle for ", "The Humble Bundle with ", "Humble Bundle with ", "The Humble Bundle ", "The Humble ", "Humble ", " Bundle", " Debut"),"", $title);
 	}
 
 
