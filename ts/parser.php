@@ -21,14 +21,7 @@
 	}
 	ConnectToDB(getDBName(), $con);
 
-	//todo: sort this out
-	$newRows = parseData("http://www.humblebundle.com/");
-
-	//There's no need to regenerate images if we haven't updated the data	
-	if ($newRows > 0)
-	{
-		include_once("image_saver.php");
-	}
+	parseData("http://www.humblebundle.com/");
 
 	/**
 	* This function exports a dump of the database to a compressed file.
