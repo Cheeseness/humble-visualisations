@@ -6,6 +6,35 @@
 	{
 		$title = urldecode($_GET['bundle']);
 	}
+	
+	//Include our parser/database/functions library
+	include_once("dbcreds.php");
+	include_once("../process.php");
+	//Let's make sure we're pulling time in UTC, OK?
+	putenv("TZ=UTC");
+	
+	//Let's connect to the database server and set the database we'll be using 
+	$con = ConnectToMySQL(getDBHost(), getDBUser(), getDBPass());
+	if(!$con)
+	{
+		echo "Cannot Connect To MySQL: " . mysql_error();
+	}
+	ConnectToDB(getDBName(), $con);
+
+	function showBundleList()
+	{
+		echo "\t<ul>\n";
+		$query = "select distinct bundleTitle from scrapedata2";
+		$result = runQuery($query);
+		while ($bundle = mysql_fetch_array($result, MYSQL_ASSOC))
+		{
+			if (strlen($bundle['bundleTitle']) > 0)
+			{
+				echo "\t\t<li><a href = '?bundle=" . getShortTitle($bundle['bundleTitle']) . "'>" . $bundle['bundleTitle'] . "</a></li>\n";
+			}
+		}
+		echo "\t</ul>\n";
+	}
 ?>
 <head>
 	<meta charset='utf-8' />
@@ -34,27 +63,8 @@
 	<p>Cheese</p>
 
 	<h3>Currently there is hourly data available for the following bundles</h3>
-	<ul>
-		<li><a href = '?bundle=Indie+6'>Humble Indie Bundle 6</a> (missing first 5 hours)</li>
-		<li><a href = '?bundle=eBook'>Humble eBook Bundle</a></li>
-		<li><a href = '?bundle=Android+4'>Humble Bundle for Android 4</a></li>
-		<li><a href = '?bundle=Indie+7'>Humble Indie Bundle 7</a></li>
-		<li><a href = '?bundle=Mojam+2'>Humble Bundle Mojam 2</a></li>
-		<li><a href = '?bundle=Android+5'>Humble Bundle with Android 5</a></li>
-<!--		<li><a href = '?bundle=Bastion'>Humble Weekly Sale: Bastion</a></li>-->
-		<li><a href = '?bundle=Mobile'>Humble Mobile Bundle</a> (only showing average payment)</li>
-		<li><a href = '?bundle=Double+Fine'>Humble Double Fine Bundle</a> (missing first 18 hours)</li>
-		<li><a href = '?bundle=indie+8'>Humble Indie Bundle 8</a></li>
-		<li><a href = '?bundle=android+6'>Humble Bundle with Android 6</a></li>
-		<li><a href = '?bundle=eBook+2'>Humble eBook Bundle 2</a></li>
-		<li><a href = '?bundle=deep+silver'>Humble Deep Silver Bundle</a> (missing separate price value data - was initially $190 and rose to $230)</li>
-		<li><a href = '?bundle=bollocks'>Humble Origin Bundle</a></li>
-		<li><a href = '?bundle=comedy'>Humble Comedy Bundle</a></li>
-		<li><a href = '?bundle=indie+9'>Humble Indie Bundle 9</a></li>
-		<li><a href = '?bundle=mobile+2'>Humble Mobile Bundle 2</a></li>
-		<li><a href = '?bundle=android+7'>Humble Bundle: PC and Android 7</a></li>
-		<li><a href = '?bundle=warner'>Humble WB Games Bundle</a></li>
-	</ul>
+	<?php showBundleList(); ?>
+	<p>Note that the Humble Indie Bundle 6 is missing the first 5 hours of data, the Humble Double Fine Bundle is missing the its first 18 hours, the Humble Mobile Bundle only shows cross platform average payment values (bottom most chart), and the Humble Deep Silver Bundle is missing separate price values (was initially $190 and rose to $230).</p>
 	
 	<p>Also available for <a href = '../weekly/'>Humble Weekly Sales</a>.</p>
 </div>

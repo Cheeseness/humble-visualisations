@@ -31,21 +31,6 @@
 		global $conn;
 		$conn = null;
 	}
-
-	/**
-	* This function simplifies executing SQL queries.
-	*/
-	function 
-	runQuery($query, $output = true)
-	{
-		global $TEST;
-		if($TEST && $output)
-		{
-			echo $query;
-		}
-		$result = mysql_query($query) or die(mysql_error());
-		return $result;
-	}
 	
 	/**
 	* This function exports a dump of the database to a compressed file.

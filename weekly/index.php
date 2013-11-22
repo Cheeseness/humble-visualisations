@@ -6,6 +6,35 @@
 	{
 		$title = urldecode($_GET['bundle']);
 	}
+	
+	//Include our parser/database/functions library
+	include_once("dbcreds.php");
+	include_once("../process.php");
+	//Let's make sure we're pulling time in UTC, OK?
+	putenv("TZ=UTC");
+	
+	//Let's connect to the database server and set the database we'll be using 
+	$con = ConnectToMySQL(getDBHost(), getDBUser(), getDBPass());
+	if(!$con)
+	{
+		echo "Cannot Connect To MySQL: " . mysql_error();
+	}
+	ConnectToDB(getDBName(), $con);
+
+	function showBundleList()
+	{
+		echo "\t<ul>\n";
+		$query = "select distinct bundleTitle from scrapedata_weekly";
+		$result = runQuery($query);
+		while ($bundle = mysql_fetch_array($result, MYSQL_ASSOC))
+		{
+			if (strlen($bundle['bundleTitle']) > 0)
+			{
+				echo "\t\t<li><a href = '?bundle=" . getShortTitle($bundle['bundleTitle']) . "'>" . $bundle['bundleTitle'] . "</a></li>\n";
+			}
+		}
+		echo "\t</ul>\n";
+	}
 ?>
 <head>
 	<meta charset='utf-8' />
@@ -34,33 +63,8 @@
 	<p>Cheese</p>
 
 	<h3>Currently there is hourly data available for the following weekly sales</h3>
-	<ul>
-		<li><a href = '?bundle=Bastion'>Humble Weekly Sale: Bastion</a></li>
-		<li><a href = '?bundle=Tripwire'>Humble Weekly Sale: Tripwire</a></li>
-		<li><a href = '?bundle=Blendo+Games'>Humble Weekly Sale: Blendo Games</a></li>
-		<li><a href = '?bundle=Telltale'>Humble Weekly Sale: Telltale Games</a> (missing first two days)</li>
-		<li><a href = '?bundle=serious+sam'>Humble Weekly Sale: Serious Sam</a></li>
-		<li><a href = '?bundle=11+bit'>Humble Weekly Sale: 11 bit studios</a></li>
-		<li><a href = '?bundle=rochard'>Humble Weekly Sale: Rochard</a></li>
-		<li><a href = '?bundle=two+tribes'>Humble Weekly Sale: Two Tribes</a></li>
-		<li><a href = '?bundle=spiderweb'>Humble Weekly Sale: Spiderweb Software</a></li>
-		<li><a href = '?bundle=jim+guthrie'>Humble Weekly Sale: Jim Guthrie and Friends</a></li>
-		<li><a href = '?bundle=1c+company'>Humble Weekly Sale: 1C Company</a></li>
-		<li><a href = '?bundle=introversion'>Humble Weekly Sale: Introversion</a></li>
-		<li><a href = '?bundle=pewdiepie'>Humble Weekly Sale: PewDiePie</a></li>
-		<li><a href = '?bundle=paradox'>Humble Weekly Sale: Paradox Interactive</a></li>
-		<li><a href = '?bundle=arcen'>Humble Weekly Sale: Arcen Games</a></li>
-		<li><a href = '?bundle=retro'>Humble Weekly Sale: Retro Shooters</a></li>
-		<li><a href = '?bundle=egosoft'>Humble Weekly Sale: Egosoft</a></li>
-		<li><a href = '?bundle=calypso'>Humble Weekly Sale: Kalypso Media</a></li>
-		<li><a href = '?bundle=nordic'>Humble Weekly Sale: Nordic Games</a></li>
-		<li><a href = '?bundle=focus'>Humble Weekly Sale: Focus Home Interactive</a></li>
-		<li><a href = '?bundle=hothead'>Humble Weekly Sale: Hothead Games</a></li>
-		<li><a href = '?bundle=cipher'>Humble Weekly Sale: Cipher Prime</a></li>
-		<li><a href = '?bundle=team+17'>Humble Weekly Sale: Team 17</a></li>
-		<li><a href = '?bundle=daedalic'>Humble Weekly Sale: Daedalic Entertainment</a></li>
-		<li><a href = '?bundle=daedalic'>Humble Weekly Sale: bitComposer Games</a></li>
-	</ul>
+	<?php showBundleList(); ?>
+	<p>Note that the Humble Weekly Sale: Telltale Games is missing the first two days of data.</p>
 	
 	<p>Also available for <a href = '../ts/'>Humble Bundle promotions</a>.</p>
 </div>

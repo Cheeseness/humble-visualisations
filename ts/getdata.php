@@ -6,6 +6,7 @@
 	}
 	//Include our parser/database/functions library
 	include_once("dbcreds.php");
+	include_once("../process.php");
 	//Let's make sure we're pulling time in UTC, OK?
 	putenv("TZ=UTC");
 
@@ -22,151 +23,21 @@
 	if(isset($_GET['bundle']))
 	{
 		$t = urldecode($_GET['bundle']);
-		if (strcasecmp($t, "mobile") == 0)
+
+		$query = "select distinct bundleTitle from scrapedata2";
+		$result = runQuery($query);
+		while ($bundle = mysql_fetch_array($result, MYSQL_ASSOC))
 		{
-			$bundleTitle = "The Humble Mobile Bundle";
-		}
-		else if (strcasecmp($t, "android 5") == 0)
-		{
-			$bundleTitle = "Humble Bundle with Android 5";
-		}
-		else if (strcasecmp($t, "mojam 2") == 0)
-		{
-			$bundleTitle = "The Humble Bundle Mojam 2";
-		}
-		else if (strcasecmp($t, "indie 7") == 0)
-		{
-			$bundleTitle = "Humble Indie Bundle 7";
-		}
-		else if (strcasecmp($t, "android 4") == 0)
-		{
-			$bundleTitle = "The Humble Bundle for Android 4";
-		}
-		else if (strcasecmp($t, "ebook") == 0)
-		{
-			$bundleTitle = "The Humble eBook Bundle";
-		}
-		else if (strcasecmp($t, "indie 6") == 0)
-		{
-			$bundleTitle = "The Humble Indie Bundle 6";
-		}
-		else if (strcasecmp($t, "double fine") == 0)
-		{
-			$bundleTitle = "The Humble Double Fine Bundle";
-		}
-		else if (strcasecmp($t, "indie 8") == 0)
-		{
-			$bundleTitle = "The Humble Indie Bundle 8";
-		}
-		else if (strcasecmp($t, "android 6") == 0)
-		{
-			$bundleTitle = "The Humble Bundle with Android 6";
-		}
-		else if (strcasecmp($t, "ebook 2") == 0)
-		{
-			$bundleTitle = "Humble eBook Bundle 2";
-		}
-		else if (strcasecmp($t, "deep silver") == 0)
-		{
-			$bundleTitle = "The Humble Deep Silver Bundle";
-		}
-		else if ((strcasecmp($t, "bollocks") == 0) || (strcasecmp($t, "origin") == 0))
-		{
-			$bundleTitle = "The Humble Origin Bundle";
-		}
-		else if (strcasecmp($t, "comedy") == 0)
-		{
-			$bundleTitle = "The Humble Comedy Bundle";
-		}
-		else if (strcasecmp($t, "indie 9") == 0)
-		{
-			$bundleTitle = "Humble Indie Bundle 9";
-		}
-		else if (strcasecmp($t, "mobile 2") == 0)
-		{
-			$bundleTitle = "Humble Mobile Bundle 2";
-		}
-		else if (strcasecmp($t, "android 7") == 0)
-		{
-			$bundleTitle = "The Humble Bundle: PC and Android 7";
-		}
-		else if (strcasecmp($t, "warner") == 0)
-		{
-			$bundleTitle = "The Humble WB Games Bundle";
-		}
-		if (strcasecmp($t, "chicken") == 0)
-		{
-			#$bundleTitle = "The Humble Bundle with Android 5";
-			$bundleTitle = "Oops";
+			if (strtolower($_GET['bundle']) === strtolower(getShortTitle($bundle['bundleTitle'])) && strlen($bundle['bundleTitle']) > 0)
+			{
+				$bundleTitle = $bundle['bundleTitle'];
+				break;
+			}
 		}
 	}
 
 	$bundleData = getData($bundleTitle);
-	echo json_encode($bundleData);	
-
-
-	/**
-	* This function attempts to give us a quick and dirty short version of the
-	* given bundle title.
-	*/
-	function getShortTitle($title)
-	{
-		return str_replace(array("Humble Weekly Sale: ", "The Humble Bundle for ", "The Humble Bundle with ", "Humble Bundle with ", "The Humble Bundle ", "The Humble ", " Bundle", " Debut"),"", $title);
-	}
-
-	/**
-	* This function connects us to the specified database server using the
-	* given connection.
-	*/
-	function ConnectToMySQL($host, $user, $pass=null) {
-		global $TEST;
-		if($TEST) echo "MySQL: Connecting to MySQL Server $host as $user<br />";
-		return mysql_connect($host, $user, $pass);
-	}
-
-	/**
-	* This function selects the specified database for queries via the
-	* given connection.
-	*/
-	function ConnectToDB($dbname, $connection=null) {
-		global $TEST;
-		if($TEST)
-		{
-			echo "MySQL: Connecting to Database $dbname using connection $connection";
-		}
-		
-		if(mysql_select_db($dbname, $connection)) 
-		{
-			if($TEST)
-			{
-				echo "MySQL: Connection Successful";
-			}
-			return true;
-		}
-		else
-		{
-			if($TEST)
-			{
-				echo "MySQL: Error connecting to Database $dbname : " . mysql_error();
-			}
-			return false;
-		}
-	}
-	
-	
-	/**
-	* This function simplifies executing SQL queries.
-	*/
-	function runQuery($query, $output = true)
-	{
-		global $TEST;
-		if($TEST && $output)
-		{
-			echo $query;
-		}
-		$result = mysql_query($query) or die(mysql_error());
-		return $result;
-	}
+	echo json_encode($bundleData);
 
 	/**
 	* This function yoinks all the relevant data from the database and returns an array containing calculated statistics for every bundle.
