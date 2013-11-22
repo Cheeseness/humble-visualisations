@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "warner";
+	$title = "mobile 3";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
