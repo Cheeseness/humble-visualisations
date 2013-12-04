@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "mobile 3";
+	$title = "jumbo";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -24,7 +24,7 @@
 	function showBundleList()
 	{
 		echo "\t<ul>\n";
-		$query = "select distinct bundleTitle from scrapedata2";
+		$query = "select bundleTitle, max(lastUpdated) from scrapedata2 group by bundleTitle order by lastUpdated";
 		$result = runQuery($query);
 		while ($bundle = mysql_fetch_array($result, MYSQL_ASSOC))
 		{

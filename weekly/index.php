@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "zen studios";
+	$title = "weekly sale";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
@@ -24,7 +24,7 @@
 	function showBundleList()
 	{
 		echo "\t<ul>\n";
-		$query = "select distinct bundleTitle from scrapedata_weekly";
+		$query = "select bundleTitle, max(lastUpdated) from scrapedata_weekly group by bundleTitle order by lastUpdated";
 		$result = runQuery($query);
 		while ($bundle = mysql_fetch_array($result, MYSQL_ASSOC))
 		{
