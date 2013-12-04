@@ -33,21 +33,7 @@
 		$conn = null;
 	}
 
-	/**
-	* This function simplifies executing SQL queries.
-	*/
-	function 
-	runQuery($query, $output = true)
-	{
-		global $TEST;
-		if($TEST && $output)
-		{
-			echo $query;
-		}
-		$result = mysql_query($query) or die(mysql_error());
-		return $result;
-	}
-	
+
 	/**
 	* This function exports a dump of the database to a compressed file.
 	* TODO: Is this necessary if we're also providing json representations?
@@ -235,6 +221,8 @@
 		$fullPriceLast = substr($fullPriceLast, 1, (- (strlen($fullPriceLast) - strpos($fullPriceLast, " "))) - 1);
 		//And last but not least, let's kill any pesky trailing (or otherwise) commas
 		$fullPriceLast = str_ireplace(",", "", $fullPriceLast);
+
+
 
 		if ($debug)
 		{
