@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
 <?php
-	$title = "Puppy Games";
+	$title = "Frozenbyte";
 	if (isset($_GET['bundle']))
 	{
 		$title = urldecode($_GET['bundle']);
