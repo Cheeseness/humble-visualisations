@@ -128,6 +128,7 @@ function init()
 				"footnotes": helpersWrapper.select("#footnotes"),
 				"sightings": helpersWrapper.select("#sightings"),
 				"about": helpersWrapper.select("#about"),
+				"discussion": helpersWrapper.select("#discussion") ,
 				"source": helpersWrapper.select("#source") };
 
 	helperTargetsWrapper = d3.select("#helperTargets");
@@ -135,6 +136,7 @@ function init()
 				"footnotes": helperTargetsWrapper.select("#footnotes_target").on("click", function() { showHelper("footnotes"); } ),
 				"sightings": helperTargetsWrapper.select("#sightings_target").on("click", function() { showHelper("sightings"); } ),
 				"about": helperTargetsWrapper.select("#about_target").on("click", function() { showHelper("about"); } ),
+				"discussion": helperTargetsWrapper.select("#discussion_target").on("click", function() { showHelper("discussion"); } ),
 				"source": helperTargetsWrapper.select("#source_target").on("click", function() { showHelper("source"); } ) };
 
 	tip = d3.select("body").append("div").attr("class", "tooltip");

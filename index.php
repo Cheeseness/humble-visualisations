@@ -49,6 +49,7 @@
 	<li id = 'footnotes_target'>Footnotes</li>
 	<li id = 'sightings_target'>Sighted Citings</li>
 	<li id = 'about_target'>About/History</li>
+	<li id = 'discussion_target'>Discussion</li>
 	<li id = 'source_target'>Source/Contribute</li>
 </ul>
 <div id = 'helpers'>
@@ -80,6 +81,7 @@
 
 	<p><strong>You're showing us a lot of stuff here, but you're not telling us what it <em>means</em>?</strong> I think it's important to separate information from interpretation, and I'm keen to let other people come to their own conclusions before suggesting what it might all mean. If you click the <strong><a onclick = 'javascript: showHelper("sightings"); return false;'>Sighted Citings</a></strong> tab above, you can see a list of my own and other people's ramblings about and interpretations of the Humble Visualisations' data.</p>
 	<p><strong>Your excessive verbosity is exciting to me, can I contact you?</strong> Sure, why not? Details can be found by clicking the <strong><a onclick = 'javascript: showHelper("about"); return false;'>About/History</a></strong> tab above. ^_^</p>
+	<p><strong>But I don't want to talk to you. Where can I talk to other people?</strong> Click on the <strong><a onclick = 'javascript: showHelper("discussion"); return false;'>Discussion</a></strong> tab above to see a list of vaguely official places to converse. That said, please feel welcome to discuss this stuff anywhere you like!</p>
 
 </div>
 <div id = 'sightings' class = 'popup'>
@@ -118,6 +120,19 @@
 	<p>My name is Josh, but my friends call me Cheese (and you can too - don't you feel special?).</p>
 	<p>I dabble in a lot of things, but if you're on this page, then the ones that might interest you most are my collection of "<a href = 'http://cheesetalks.twolofbees.com/'>Cheese Talks</a>" reviews, articles and interviews where I look at and talk to people and things relating to the gaming and the Free Software world (not necessarily at the same time), the open source game <a href = 'http://neverball.org'>Neverball</a> which I contribute to, and maybe <a href = 'http://twolofbees.com'>twolofbees.com</a>, a cute art-blog-comic thing where I occasionally put fan art for games (and <a href = 'http://twolofbees.com/artwork.php?iid=959'>this vaguely relevant image</a>).</p>
 	<p>I can be followed/stalked/casually observed on twitter as <a href = 'http://twitter.com/twolofbees'>@twolofbees</a>.</p>
+	<p>You may also find me idling in the #humblebundle IRC channel. Details can be found in the <strong><a onclick = 'javascript: showHelper("discussion"); return false;'>Discussion</a></strong> tab above.</p>
+</div>
+<div id = 'discussion' class = 'popup'>
+	<h2>#humblebundle IRC</h2>
+	<p>We've recently adopted #humblebundle on irc.freenode.net as the go-to place for Humble Visualisations related chat. I can often be found idling as Cheeseness and will respond to pings if I'm around!</p>
+	<p>Alternatively, if you don't have an IRC client or don't have any idea what any of this means, you can visit this <a href = 'http://webchat.freenode.net/?channels=humblebundle'>handy webchat URL</a>, type out the annoying captcha and get chatting!</p>
+	
+	<h2>Twitter #HumVis Hashtag</h2>
+	<p>I've been using the <a href = 'https://twitter.com/search?q=%23HumVis&f=realtime'>#HumVis hashtag</a> in Humble Visualisations related tweets! If you use Twitter, you are welcome to as well!</p>
+	
+	<h2>GitHub Bug/Development Discussion</h2>
+	<p>Less transient discussion on bugs and development is worth conducting in <a href = 'https://github.com/Cheeseness/humble-visualisations/issues'>issues</a> on the Humble Visualisations <a href = 'https://github.com/Cheeseness/humble-visualisations'>GitHub repository</a>.</p>
+	<p>Bug and development discussion anywhere else is welcome, of course, though it's worth updating GitHub issues with any relevant conversational outcomes.</p>
 </div>
 <div id = 'source' class = 'popup'>
 	<h2>GitHub</h2>
