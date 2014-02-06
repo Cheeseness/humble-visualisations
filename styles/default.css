@@ -79,6 +79,7 @@ footer
 	box-shadow: 0 5px 10px #000000;
 	vertical-align: bottom;
 	transition: all 0.25s linear;
+	cursor: pointer;
 }
 
 #helperTargets li:hover

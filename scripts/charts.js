@@ -139,6 +139,12 @@ function init()
 				"discussion": helperTargetsWrapper.select("#discussion_target").on("click", function() { showHelper("discussion"); } ),
 				"source": helperTargetsWrapper.select("#source_target").on("click", function() { showHelper("source"); } ) };
 
+	frag = window.location.hash.substr(1);
+	if (helperTargets.hasOwnProperty(frag))
+	{
+		showHelper(frag);
+	}
+
 	tip = d3.select("body").append("div").attr("class", "tooltip");
 
 	aggregateData = [];
