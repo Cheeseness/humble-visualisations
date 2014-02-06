@@ -12,7 +12,7 @@ var helperTargetsWrapper;
 
 function getShortTitle(title)
 {
-	return title.replace(/(The\sHumble\sBundle\sfor\s)/gi, "").replace(/(The\sHumble\sBundle\swith\s)/gi, "").replace(/(Humble\sBundle\swith\s)/gi, "").replace(/(The\sHumble\sBundle\s)/gi, "").replace(/(The\sHumble\s)/gi, "").replace(/(Humble\s)/gi, "").replace(/(\sBundle)/gi, "").replace(/(Bundle:\sPC\sand\s)/gi, "").replace(/(\sDebut)/gi,"");
+	return title.replace(/(The\sHumble\sBundle\sfor\s)/gi, "").replace(/(The\sHumble\sBundle\swith\s)/gi, "").replace(/(Humble\sBundle\swith\s)/gi, "").replace(/(The\sHumble\sBundle\s)/gi, "").replace(/(The\sHumble\s)/gi, "").replace(/(Humble\s)/gi, "").replace(/(\sBundle\sfeaturing)/gi, "").replace(/(\sBundle)/gi, "").replace(/(Bundle:\sPC\sand\s)/gi, "").replace(/(\sDebut)/gi,"");
 }
 
 function zeroPad(number)
@@ -203,6 +203,10 @@ function init()
 			{
 				aggregateData[i].type = "ebook";
 			}
+			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("audiobook") >= 0)
+			{
+				aggregateData[i].type = "audiobook";
+			}
 			else if (aggregateData[i].bundleTitle.toLowerCase().indexOf("comedy") >= 0)
 			{
 				aggregateData[i].type = "comedy";
@@ -287,6 +291,10 @@ function init()
 			else if (data[i].bundleTitle.toLowerCase().indexOf("ebook") >= 0)
 			{
 				data[i].type = "ebook";
+			}
+			else if (data[i].bundleTitle.toLowerCase().indexOf("audiobook") >= 0)
+			{
+				data[i].type = "audiobook";
 			}
 			else if (data[i].bundleTitle.toLowerCase().indexOf("comedy") >= 0)
 			{
@@ -473,6 +481,7 @@ var makeTimeline = function(data)
 				"debut" : "#0000cc",
 				"music" : "#cc00cc",
 				"ebook" : "#cc00cc",
+				"audiobook" : "#cc00cc",
 				"comedy" : "#cc00cc",
 				};
 
@@ -554,7 +563,7 @@ var makeTimeline = function(data)
 				})
 			.on("click", function (d) { showHelper("footnotes"); return false; });
 	tableTarget.append("p")
-		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook, music and comedy bundles.");
+		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook, audiobook, music and comedy bundles.");
 	tableTarget.append("p")
 		.text("Points are placed based on start date and do not indicate duration.");
 
@@ -637,7 +646,7 @@ var makeTimeline = function(data)
 				})
 			.on("click", function (d) { showHelper("footnotes"); return false; });
 	tableTarget.append("p")
-		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook and music bundles.");
+		.html("<span class = 'indicatorIndie'>Red</span> represents \"indie\" bundles, <span class = 'indicatorNonIndie'>Blue</span> represents \"non-indie\" bundles and debut promotions, <span class = 'indicatorAndroid'>Green</span> represents Android and mobile bundles, <span class = 'indicatorMojam'>Mustard</span> represents Mojam events, <span class = 'indicatorEbook'>Purple</span> represents ebook, audiobook and music bundles.");
 
 }
 

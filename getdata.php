@@ -109,8 +109,9 @@
 		//Game Bundles
 		//Music Bundles
 		//E-Book Bundles
+		//Audiobook Bundles
 			"bundleTypes"=> array("indie", "non-indie", "android", "mobile", "debut", "mojam",
-			 "game", "music", "ebook", "comedy", "weekly"),
+			 "game", "music", "ebook", "comedy", "weekly", "audiobook"),
 
 
 		//TODO: This (moving out to JS for the moment at Hannah's advice. Because she's awesome.
@@ -203,7 +204,18 @@
 			}
 			echo ",";
 
-			$query = getAggregate("All Non-Indie Bundles Combined", $request, "bundleTitle not like '%indie%' and bundleTitle not like '%music%' and bundleTitle not like '%ebook%' and bundleTitle not like '%comedy%' and bundleTitle not like '%android%' and bundleTitle not like '%mojam%' and bundleTitle not like '%mobile%' and bundleTitle not like '%debut%'");
+			$query = getAggregate("All Audiobook Bundles Combined", $request, "bundleTitle like '%audiobook%'");
+			$stmt = $conn->query($query);
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			foreach ($result as $row)
+			{
+				echo "\"" . $row['bundleTitle'] . "\":";
+				echo json_encode($row);
+				echo "\n";
+			}
+			echo ",";
+
+			$query = getAggregate("All Non-Indie Bundles Combined", $request, "bundleTitle not like '%indie%' and bundleTitle not like '%music%' and bundleTitle not like '%ebook%' and bundleTitle not like '%comedy%' and bundleTitle not like '%audiobook%' and bundleTitle not like '%android%' and bundleTitle not like '%mojam%' and bundleTitle not like '%mobile%' and bundleTitle not like '%debut%'");
 			$stmt = $conn->query($query);
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			foreach ($result as $row)
@@ -227,6 +239,17 @@
 			echo ",";
 */
 			$query = getAggregate("All Music Bundles Combined", $request, "bundleTitle like '%music%'");
+			$stmt = $conn->query($query);
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			foreach ($result as $row)
+			{
+				echo "\"" . $row['bundleTitle'] . "\":";
+				echo json_encode($row);
+				echo "\n";
+			}
+			echo ",";
+
+			$query = getAggregate("All Audiobook Bundles Combined", $request, "bundleTitle like '%audiobook%'");
 			$stmt = $conn->query($query);
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			foreach ($result as $row)
@@ -301,6 +324,8 @@
 
 			if (in_array("music", $request["bundleTypes"])) { $bundleTypes[] = "bundleTitle like '%music%' "; }
 			if (in_array("ebook", $request["bundleTypes"])) { $bundleTypes[] = "bundleTitle like '%ebook%' "; }
+			if (in_array("audiobook", $request["bundleTypes"])) { $bundleTypes[] = "bundleTitle like '%audiobook%' "; }
+			if (in_array("comedy", $request["bundleTypes"])) { $bundleTypes[] = "bundleTitle like '%comedy%' "; }
 			if (in_array("weekly", $request["bundleTypes"])) { $bundleTypes[] = "bundleTitle like '%weekly%' "; }
 		
 			$limit = -1;
