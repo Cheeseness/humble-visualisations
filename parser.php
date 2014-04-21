@@ -129,6 +129,7 @@
 					{
 						echo "Found: " . $bundleTitle . "\n";
 					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
 				else if (stripos($h->nodeValue, "the humble") !== false)
 				{
@@ -137,7 +138,18 @@
 					{
 						echo "Found: " . $bundleTitle . "\n";
 					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
+				else if ((stripos($h->nodeValue, "humble") !== false) && (stripos($h->nodeValue, "bundle") !== false))
+				{
+					$bundleTitle = trim($h->nodeValue);
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
+				}
+				
 				
 				if (stripos($h->nodeValue, " is now") !== false)
 				{
@@ -148,7 +160,7 @@
 					{
 						echo "Is over: " . $isOver . "\n";
 					}
-
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
 			}
 		}
@@ -156,14 +168,13 @@
 		//New page markup is getting harder to pull the bundle title from, so let's try getting it from the alt attribute of the logo when all else fails
 		if ($bundleTitle == "")
 		{
-			$nodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' bundle-logo ' )]");
+			$nodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' first-section-heading ' )]");
 			foreach ($nodes as $node)
 			{
-				$img = $node->getElementsByTagName("img");
-				foreach ($img as $i)
-				if ($i->hasAttribute("alt"))
+				$h = $node->getElementsByTagName("h2");
+				foreach ($h as $i)
 				{
-					$i = $i->getAttribute("alt");
+					$i = $i->nodeValue;
 					if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
 					{
 						$bundleTitle = $i;
@@ -174,7 +185,6 @@
 					}
 				}
 			}
-		
 		}
 
 		//The "full price" value is tricky to grab as well
@@ -197,19 +207,38 @@
 		foreach ($yetmorenodes as $node)
 		{
 			$pgraphs = $node->getElementsByTagName("p");
+			
 			foreach ($pgraphs as $i)
 			{
 				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 				{
 					$fullPriceLast = $i->nodeValue;
+					if ($debug)
+					{
+						echo "Full price text: " . $fullPriceLast . "\n";
+					}
 					break;
 				}
-
-				if ($debug)
+			}
+			
+			if ($fullPriceLast == "")
+			{
+				$pgraphs = $node->getElementsByTagName("aside");
+			
+				foreach ($pgraphs as $i)
 				{
-					echo "Full price: " . $fullPriceLast . "\n";
+					if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+					{
+						$fullPriceLast = $i->nodeValue;
+						if ($debug)
+						{
+							echo "Full price text: " . $fullPriceLast . "\n";
+						}
+						break;
+					}
 				}
 			}
+			
 		}
 		
 		

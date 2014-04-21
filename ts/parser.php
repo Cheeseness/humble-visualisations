@@ -10,6 +10,12 @@
 	//So that I don't share my creds, I've put functions that return my database username, password, etc. into functions that live in here. You can either create your own dbCreds.php or you can replace the function calls with strings or variables.
 	include_once("dbcreds.php");
 	
+	$debug = false;
+	if (isset($_GET['debug']))
+	{
+		$debug = true;
+	}
+	
 	//Let's make sure we're pulling time in UTC, OK?
 	putenv("TZ=UTC");
 
@@ -155,6 +161,9 @@
 	*/
 	function parseData($url)
 	{
+	
+		global $debug;
+		
 		//Tell the server who we are - if you use or edit this for your own purposes, please change the user agent string to something appropriate for what you're doing <3
 		ini_set("user_agent", "HumbleStatsParser (http://cheesetalks.twolofbees.com/)");
 
@@ -215,12 +224,29 @@
 				if (stripos($h->nodeValue, "weekly") !== false)
 				{
 					$bundleTitle = trim($h->nodeValue);
-					echo "<!--" . $bundleTitle . "-->";
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
 				else if (stripos($h->nodeValue, "the humble") !== false)
 				{
 					$bundleTitle = trim($h->nodeValue);
-					echo "<!--" . $bundleTitle . "-->";
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
+				}
+				else if ((stripos($h->nodeValue, "humble") !== false) && (stripos($h->nodeValue, "bundle") !== false))
+				{
+					$bundleTitle = trim($h->nodeValue);
+					if ($debug)
+					{
+						echo "Found: " . $bundleTitle . "\n";
+					}
+					break; //Yay, now we have multiple h2 elements with the bundle title in it
 				}
 			}
 		}
@@ -238,6 +264,11 @@
 					if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
 					{
 						$bundleTitle = $i;
+						if ($debug)
+						{
+							echo "Found: " . $bundleTitle . "\n";
+						}
+						break;
 					}
 				}
 			}
@@ -274,6 +305,24 @@
 				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 				{
 					$fullPrice = $i->nodeValue;
+				}
+			}
+
+			if ($fullPrice == "")
+			{
+				$pgraphs = $node->getElementsByTagName("aside");
+			
+				foreach ($pgraphs as $i)
+				{
+					if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+					{
+						$fullPrice = $i->nodeValue;
+						if ($debug)
+						{
+							echo "Full price text: " . $fullPrice . "\n";
+						}
+						break;
+					}
 				}
 			}
 		}
@@ -391,11 +440,21 @@
 		if ($isOver == false)
 		{
 			$query = "insert into scrapedata2 (bundleTitle, lastUpdated, paymentTotal, purchaseTotal, pcLin, pcMac, pcWin, paymentAverage, avLin, avMac, avWin, fullPrice) values ('" . $bundleTitle . "', utc_timestamp(), '" . $paymentTotal . "', '" . $purchaseTotal . "', '" . $pcLin . "', '" . $pcMac . "', '" . $pcWin . "', '" . $paymentAverage . "', '" . $avLin . "', '" . $avMac . "', '" . $avWin . "', '" . $fullPrice . "')";
-			$result = runQuery($query);
 			
-			//Do an updated dump of the database and return the number of rows that the query inserted (it's not really that relevant, but it's nice for debugging)
-//			dumpData();
-			return mysql_affected_rows();
+			if ($debug)
+			{
+				echo $query;
+				return;
+			}
+			else
+			{
+				$result = runQuery($query);
+			
+				//Do an updated dump of the database and return the number of rows that the query inserted (it's not really that relevant, but it's nice for debugging)
+	//			dumpData();
+				return mysql_affected_rows();
+			}
+
 		}
 		else
 		{

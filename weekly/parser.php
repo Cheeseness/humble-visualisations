@@ -9,7 +9,13 @@
 
 	//So that I don't share my creds, I've put functions that return my database username, password, etc. into functions that live in here. You can either create your own dbCreds.php or you can replace the function calls with strings or variables.
 	include_once("dbcreds.php");
-	
+
+	$debug = false;
+	if (isset($_GET['debug']))
+	{
+		$debug = true;
+	}
+
 	//Let's make sure we're pulling time in UTC, OK?
 	putenv("TZ=UTC");
 
@@ -155,6 +161,8 @@
 	*/
 	function parseData($url)
 	{
+		global $debug;
+		
 		//Tell the server who we are - if you use or edit this for your own purposes, please change the user agent string to something appropriate for what you're doing <3
 		ini_set("user_agent", "HumbleStatsParser (http://cheesetalks.twolofbees.com/)");
 
@@ -266,6 +274,44 @@
 			$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
 
 		}
+		
+		if ($fullPrice == "")
+		{
+			$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' bundle-body ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+			foreach ($yetmorenodes as $node)
+			{
+				$pgraphs = $node->getElementsByTagName("p");
+			
+				foreach ($pgraphs as $i)
+				{
+					if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+					{
+						$fullPrice = $i->nodeValue;
+						if ($debug)
+						{
+							echo "Full price text: " . $fullPrice . "\n";
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		//We don't need the HTML tags (in fact, they're just going to get in the way
+	        $fullPrice = strip_tags($fullPrice);
+	        //Shorten the string to everything from $ symbol
+		$fullPrice = substr($fullPrice, strpos($fullPrice, "$"));
+		//And now let's drop everything from (including) the first space, as well as the $ symbol
+		$fullPrice = substr($fullPrice, 1, (- (strlen($fullPrice) - strpos($fullPrice, " "))) - 1);
+		//And last but not least, let's kill any pesky trailing (or otherwise) commas
+		$fullPrice = str_ireplace(",", "", $fullPrice);
+
+
+
+		if ($debug)
+		{
+			echo "\nFull price: " . $fullPriceLast . "\n\n";
+		}
 
 		$chartURL = array();
 					
@@ -358,11 +404,20 @@
 		if ($isOver == false)
 		{
 			$query = "insert into scrapedata_weekly (bundleTitle, lastUpdated, paymentTotal, purchaseTotal, pcLin, pcMac, pcWin, paymentAverage, avLin, avMac, avWin, fullPrice) values ('" . $bundleTitle . "', utc_timestamp(), '" . $paymentTotal . "', '" . $purchaseTotal . "', '" . $pcLin . "', '" . $pcMac . "', '" . $pcWin . "', '" . $paymentAverage . "', '" . $avLin . "', '" . $avMac . "', '" . $avWin . "', '" . $fullPrice . "')";
-			$result = runQuery($query);
+
+			if ($debug)
+			{
+				echo $query;
+				return;
+			}
+			else
+			{
+				$result = runQuery($query);
 			
-			//Do an updated dump of the database and return the number of rows that the query inserted (it's not really that relevant, but it's nice for debugging)
-//			dumpData();
-			return mysql_affected_rows();
+				//Do an updated dump of the database and return the number of rows that the query inserted (it's not really that relevant, but it's nice for debugging)
+//				dumpData();
+				return mysql_affected_rows();
+			}
 		}
 		else
 		{
