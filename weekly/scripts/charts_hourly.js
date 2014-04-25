@@ -73,7 +73,7 @@ function showBundle(bundleTitle)
 			lastUpdated = buildDate(result.data[row].lastUpdated);
 			if (lastDate != null)
 			{
-				console.log("Got last date" + (lastDate - lastUpdated))
+				//console.log("Got last date" + (lastDate - lastUpdated))
 				if (lastUpdated - lastDate > 4000000) //If we're a bit over an hour
 				{
 					console.log("Skipped data")
@@ -167,7 +167,7 @@ function showBundle(bundleTitle)
 		
 		makeRevenueDiffChart(data);
 		makePurchaseDiffChart(data);
-		//makeValueChart(data);
+		makeValueChart(data);
 		makeRevenueChart(data);
 		makePurchaseChart(data);
 		makeAverageChart(data);
@@ -176,18 +176,31 @@ function showBundle(bundleTitle)
 
 var makeValueChart = function(data)
 {
+
+	var d2 = d3.layout.stack()(["firstPrice", "fullPriceDiff"].map(function(p) { return data.map(function(d) { return {x: d.lastUpdated, y: +d[p], t: getShortTitle(data.bundleTitle), c: p, a: data.fullPriceDiff }; }); }));
+	console.log("Making value chart");
+
+	var yMax = d3.max(d2[d2.length - 1], function(d) { return d.y0 + d.y; });
+	//console.log(yMax);
+	if (yMax == 0)
+	{
+		console.log("Aborting value chart. No data available.");
+		return;
+	}
+	if (yMax < 50)
+	{
+		yMax = 50;
+	}
+
 	var chartTarget = d3.select("#chartPlayground").append("div").attr("class", "widestats");
 	chartTarget.append("h2").html(data.bundleTitle + "<br />Hourly Separate Price Values");
 
-	var coloursPrice = {"fullPriceFirst":"#3D7930", "fullPriceExtra" : "#A2C180"};
+	var coloursPrice = {"firstPrice":"#3D7930", "fullPriceDiff" : "#A2C180"};
 	var coloursPriceGrey = {"Initial":"#3D7930", "Extra" : "#A2C180"};
 	var currencyFormatter = d3.format(",.2f");
 	
 	var chartWidth = 900;
 	var chartHeight = 200;
-
-	var d2 = d3.layout.stack()(["firstPrice", "fullPrice"].map(function(p) { console.log(p); return data.map(function(d) { return {x: d.lastUpdated, y: +d[p], t: getShortTitle(data.bundleTitle), c: p}; }); }));
-	console.log("Making value chart");
 
 	var valueChart = chartTarget.append("svg")
 		.attr("class", "valueChart")
@@ -196,7 +209,7 @@ var makeValueChart = function(data)
 	.append("g")
 		.attr("transform", "translate(0, "+ 10.5 + ")");
 		
-	chartTarget.append("p").html("This graph shows the change in separate price value across the duration of this promotion.<br /><span class = 'indicatorLin'>Blue</span> represents Linux, <span class = 'indicatorMac'>Green</span> represents Mac OS, <span class = 'indicatorWin'>Red</span> represents Windows.");
+	chartTarget.append("p").html("This graph shows the change in separate price value across the duration of this promotion.<br /><span class = 'indicatorFirstPrice'>Dark green</span> represents the separate price value of initial titles, <span class = 'indicatorExtraPrice'>Light green</span> represents additional titles or value changes.");
 
 	var earliestDate = d3.min(data, function(d) {return d.lastUpdated; });
 	var twoWeeks = new Date();
@@ -213,24 +226,23 @@ var makeValueChart = function(data)
 		.tickSize(4, 3, 1)
 		//.ticks(d3.time.day.utc, 1)
 		.scale(valX);
-		
-		var yMax = d3.max(d2[d2.length - 1], function(d) { return d.y0 + d.y; });
-		console.log(yMax);
-		if (yMax < 50)
-		{
-			yMax = 50;
-		}
+
 	var valY = d3.scale.linear()
 		.range([0, chartHeight])
 		.domain([0, yMax]);
+	
+	var valY2 = d3.scale.linear()
+	.range([chartHeight, 0])
+	.domain([0, yMax]);
+
 	
 	var valAxisY = d3.svg.axis()
 		.orient("left")
 		.tickPadding(3)
 		.tickSize(-(chartWidth-90), 1)
 		.ticks(5)
-		.tickFormat(function (d) { return "$" + (d3.max(d2[d2.length - 1], function(d) { return d.y0 + d.y; }) - d); })
-		.scale(valY);
+		.tickFormat(function (d) { return "$" + currencyFormatter(d); })
+		.scale(valY2);
 
 	valueChart.append("g")
 		.attr("class", "x axis")
@@ -259,7 +271,7 @@ var makeValueChart = function(data)
 		.attr("y", function(d) { return -valY(d.y0) - valY(d.y); })
 		.style("fill", function(d) { return coloursPrice[d.c]; })
 		.attr("height", function(d) { return valY(d.y); })
-		.attr("width", 10)//x.rangeBand());
+		.attr("width", 2.5)//x.rangeBand());
 /*		
 	var labels = prices.selectAll("text")
 		.data(Object)
