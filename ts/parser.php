@@ -288,40 +288,77 @@
 		//The "full price" value is tricky to grab as well
 		$fullPrice = getValue('pwyw', $dom);
 
-		//And it just got trickier
-		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
-		foreach ($othernodes as $node)
+		//Now with even more trickiness
+		if ($fullPrice == "")
 		{
-			echo "<!-- found? -->";
-			$fullPrice = $node->nodeValue;
-		}
-
-		$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
-		foreach ($yetmorenodes as $node)
-		{
-			$pgraphs = $node->getElementsByTagName("p");
-			foreach ($pgraphs as $i)
+			$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
+			foreach ($othernodes as $node)
 			{
-				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+				$fullPrice = $node->nodeValue;
+
+				if ($debug)
 				{
-					$fullPrice = $i->nodeValue;
+					echo "Full price: " . $fullPrice . "\n";
 				}
 			}
-
 			if ($fullPrice == "")
 			{
-				$pgraphs = $node->getElementsByTagName("aside");
-			
-				foreach ($pgraphs as $i)
+				$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+				foreach ($yetmorenodes as $node)
 				{
-					if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+					$pgraphs = $node->getElementsByTagName("p");
+			
+					foreach ($pgraphs as $i)
 					{
-						$fullPrice = $i->nodeValue;
-						if ($debug)
+						if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 						{
-							echo "Full price text: " . $fullPrice . "\n";
+							$fullPrice = $i->nodeValue;
+							if ($debug)
+							{
+								echo "Full price text: " . $fullPrice . "\n";
+							}
+							break;
 						}
-						break;
+					}
+			
+					if ($fullPrice == "")
+					{
+						$pgraphs = $node->getElementsByTagName("aside");
+			
+						foreach ($pgraphs as $i)
+						{
+							if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+							{
+								$fullPrice = $i->nodeValue;
+								if ($debug)
+								{
+									echo "Full price text: " . $fullPrice . "\n";
+								}
+								break;
+							}
+						}
+					}
+			
+				}
+				if ($fullPrice == "")
+				{
+					$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' copy-text ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+					foreach ($yetmorenodes as $node)
+					{
+						$pgraphs = $node->getElementsByTagName("p");
+			
+						foreach ($pgraphs as $i)
+						{
+							if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+							{
+								$fullPrice = $i->nodeValue;
+								if ($debug)
+								{
+									echo "Full price text: " . $fullPrice . "\n";
+								}
+								break;
+							}
+						}
 					}
 				}
 			}

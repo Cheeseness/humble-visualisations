@@ -191,56 +191,80 @@
 		$fullPriceLast = getValue('pwyw', $dom);
 		
 		//Now with even more trickiness
-		
-		$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
-		foreach ($othernodes as $node)
+		if ($fullPriceLast == "")
 		{
-			$fullPriceLast = $node->nodeValue;
+			$othernodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' pwyw ' )]");
+			foreach ($othernodes as $node)
+			{
+				$fullPriceLast = $node->nodeValue;
 
-			if ($debug)
-			{
-				echo "Full price: " . $fullPriceLast . "\n";
-			}
-		}
-		
-		$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
-		foreach ($yetmorenodes as $node)
-		{
-			$pgraphs = $node->getElementsByTagName("p");
-			
-			foreach ($pgraphs as $i)
-			{
-				if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+				if ($debug)
 				{
-					$fullPriceLast = $i->nodeValue;
-					if ($debug)
-					{
-						echo "Full price text: " . $fullPriceLast . "\n";
-					}
-					break;
+					echo "Full price: " . $fullPriceLast . "\n";
 				}
 			}
-			
 			if ($fullPriceLast == "")
 			{
-				$pgraphs = $node->getElementsByTagName("aside");
-			
-				foreach ($pgraphs as $i)
+				$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' how-is-bundle-formed ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+				foreach ($yetmorenodes as $node)
 				{
-					if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+					$pgraphs = $node->getElementsByTagName("p");
+			
+					foreach ($pgraphs as $i)
 					{
-						$fullPriceLast = $i->nodeValue;
-						if ($debug)
+						if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
 						{
-							echo "Full price text: " . $fullPriceLast . "\n";
+							$fullPriceLast = $i->nodeValue;
+							if ($debug)
+							{
+								echo "Full price text: " . $fullPriceLast . "\n";
+							}
+							break;
 						}
-						break;
+					}
+			
+					if ($fullPriceLast == "")
+					{
+						$pgraphs = $node->getElementsByTagName("aside");
+			
+						foreach ($pgraphs as $i)
+						{
+							if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+							{
+								$fullPriceLast = $i->nodeValue;
+								if ($debug)
+								{
+									echo "Full price text: " . $fullPriceLast . "\n";
+								}
+								break;
+							}
+						}
+					}
+			
+				}
+				if ($fullPriceLast == "")
+				{
+					$yetmorenodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' copy-text ' )]"); //We should probably use the same variable for these, but I get a kick out of giving them silly names
+					foreach ($yetmorenodes as $node)
+					{
+						$pgraphs = $node->getElementsByTagName("p");
+			
+						foreach ($pgraphs as $i)
+						{
+							if ((stripos($i->nodeValue, "$") !== false) && (stripos($i->nodeValue, "cost") !== false))
+							{
+								$fullPriceLast = $i->nodeValue;
+								if ($debug)
+								{
+									echo "Full price text: " . $fullPriceLast . "\n";
+								}
+								break;
+							}
+						}
 					}
 				}
 			}
-			
 		}
-		
 		
 		//We don't need the HTML tags (in fact, they're just going to get in the way
 	        $fullPriceLast = strip_tags($fullPriceLast);
