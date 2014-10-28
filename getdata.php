@@ -351,6 +351,7 @@
 			for ($i = 0; $i < count($result); $i ++)
 			{
 				echo "\"" . $result[$i]['bundleTitle'] . "\":";
+				$result[$i]['bundleTitle'] = htmlspecialchars_decode($result[$i]['bundleTitle'], ENT_QUOTES);
 				echo json_encode($result[$i]);
 				if ($i < (count($result) - 1))
 				{
