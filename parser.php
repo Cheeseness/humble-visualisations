@@ -320,7 +320,7 @@
 		}
 		
 		//Is there an existing record with this title?
-		$query = "select id from newdata where bundleTitle = '" . $bundleTitle . "' limit 1";
+		$query = "select id from newdata where bundleTitle = '" . htmlspecialchars($bundleTitle, ENT_QUOTES) . "' limit 1";
 		$stmt = $conn->query($query);
 		$existingRecord = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		if ($debug)
@@ -374,7 +374,7 @@
 			else
 			{
 				$stmt = $conn->prepare($query);
-				$success = $stmt->execute(array('bundleTitle' => $bundleTitle, 'pyTotal' => $pyTotal, 'puTotal' => $puTotal, 'pcLin' => $pcLin, 'pcMac' => $pcMac, 'pcWin' => $pcWin, 'avAll' => $avAll, 'avLin' => $avLin, 'avMac' => $avMac, 'avWin' => $avWin, 'fullPriceFirst' => $fullPriceLast, 'fullPriceLast' => $fullPriceLast, 'pyLin' => $pyLin, 'pyMac' => $pyMac, 'pyWin' => $pyWin, 'puLin' => $puLin, 'puMac' => $puMac, 'puWin' => $puWin));
+				$success = $stmt->execute(array('bundleTitle' => htmlspecialchars($bundleTitle, ENT_QUOTES), 'pyTotal' => $pyTotal, 'puTotal' => $puTotal, 'pcLin' => $pcLin, 'pcMac' => $pcMac, 'pcWin' => $pcWin, 'avAll' => $avAll, 'avLin' => $avLin, 'avMac' => $avMac, 'avWin' => $avWin, 'fullPriceFirst' => $fullPriceLast, 'fullPriceLast' => $fullPriceLast, 'pyLin' => $pyLin, 'pyMac' => $pyMac, 'pyWin' => $pyWin, 'puLin' => $puLin, 'puMac' => $puMac, 'puWin' => $puWin));
 				//Do an updated dump of the database and return the number of rows that the query updated (it's not really that relevant, but it's nice for debugging)
 				dumpMySQLData();
 				return $success;
