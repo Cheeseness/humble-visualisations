@@ -155,6 +155,7 @@
 				{
 					$bundleTitle = str_replace(" is now closed", "", $bundleTitle); //This stops us from making a new entry for closed bundles :D
 					$bundleTitle = str_replace(" is now over", "", $bundleTitle); //This wording for expired bundles was added with the Botanicula Debut
+					$bundleTitle = str_replace(" is over", "", $bundleTitle); //This wording for expired bundles was used at some time around the sega bundle?
 					$isOver = true;
 					if ($debug)
 					{
@@ -186,6 +187,52 @@
 				}
 			}
 		}
+		
+		//And markup has changed again
+		if ($bundleTitle == "")
+		{
+			$nodes = $pathfinder->query("//*[contains(concat(' ', normalize-space( @class ), ' '), ' heading-logo ' )]");
+			foreach ($nodes as $node)
+			{
+				$h = $node->getElementsByTagName("img");
+				foreach ($h as $i)
+				{
+					if ($i->hasAttribute("alt"))
+					{
+						$i = $i->getAttribute("alt");
+						if ((stripos($i, "humble") !== false) && (stripos($i, "bundle") !== false))
+						{
+							$bundleTitle = $i;
+							if ($debug)
+							{
+								echo "Found: " . $bundleTitle . "\n";
+							}
+							break;
+						}
+					}
+				}
+				if ($bundleTitle != "") //And they now list every concurrent bundle on the page with the same markup \o/
+				{
+					break;
+				}
+			}
+		}
+
+		//We now have a different way of detecting whether a bundle is over
+		$pButton = $dom->getElementById("header-purchase");
+		if ($pButton != NULL)
+		{
+			$pButton = $pButton->nodeValue;
+			if (stripos($pButton, "is over") !== false)
+			{
+				$isOver = true;
+				if ($debug)
+				{
+					echo "Is over: " . $isOver . "\n";
+				}
+			}
+		}
+		
 
 		//The "full price" value is tricky to grab as well
 		$fullPriceLast = getValue('pwyw', $dom);
