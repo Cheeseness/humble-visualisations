@@ -114,7 +114,7 @@
 				$first = false;
 			}
 
-			$bundleTitle = $bundle['bundleTitle'];
+			$bundleTitle = htmlspecialchars_decode($bundle['bundleTitle'], ENT_QUOTES);
 			$rvLinLast = $rvLin;
 			$rvMacLast = $rvMac;
 			$rvWinLast = $rvWin;
