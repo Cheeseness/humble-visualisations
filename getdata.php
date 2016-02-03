@@ -332,11 +332,11 @@
 		
 			$query = "select " . implode($params, ",") . " from newdata ";
 
-			if (count($conditions) > 0)
+/*			if (count($conditions) > 0)
 			{
 				$query .= " where " . implode($conditions, ",");
 			}
-			
+*/
 			$query .= " order by firstSeen";
 			
 			if ($limit > 0)
