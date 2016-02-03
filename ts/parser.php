@@ -1,4 +1,5 @@
 <?php
+	return;
 	/**
 	* This file was created for my Humble Visualisations page which calculates extra
 	* statistics and trends for the Humble Indie Bundle promotions.

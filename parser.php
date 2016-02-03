@@ -1,4 +1,5 @@
 <?php
+	return;
 	include_once("dbcreds.php");
 	include_once("process.php");
 
